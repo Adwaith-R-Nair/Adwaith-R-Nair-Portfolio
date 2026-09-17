@@ -68,10 +68,12 @@ export const absolute = (path: string): string => new URL(path, siteUrl()).toStr
 
 ### Task 2: Icons
 
-- [ ] `src/app/icon.tsx` with `generateImageMetadata` returning ids `small` (32) and `large` (192), and `Icon({ id })` rendering: ground square, a large Instrument Serif "A" in accent set slightly left of centre, and "RN" in IBM Plex Mono in gold at the bottom right, sized relative to the icon. At 32 px the A carries the mark; at 192 the signature reads.
-- [ ] `src/app/apple-icon.tsx` at 180 px, same drawing, no transparency.
-- [ ] Verify the `<link rel="icon">` tags in the built HTML and view `/icon` and `/apple-icon` in Chrome.
-- [ ] Commit: `feat(launch): add generated favicons and apple icon`
+> Also in this task, at Adwaith's request: `/work` pages and cards for Nexus and Zyra (decisions/0003), so every project link carries its own card.
+
+- [x] `src/app/icon.tsx` with `generateImageMetadata` returning ids `small` (32) and `large` (192), and `Icon({ id })` rendering: ground square, a large Instrument Serif "A" in accent set slightly left of centre, and "RN" in IBM Plex Mono in gold at the bottom right, sized relative to the icon. At 32 px the A carries the mark; at 192 the signature reads.
+- [x] `src/app/apple-icon.tsx` at 180 px, same drawing, no transparency.
+- [x] Verify the `<link rel="icon">` tags in the built HTML and view `/icon` and `/apple-icon` in Chrome.
+- [x] Commit: `feat(launch): add generated favicons and apple icon`
 
 ### Task 3: Sitemap, robots, structured data, analytics
 

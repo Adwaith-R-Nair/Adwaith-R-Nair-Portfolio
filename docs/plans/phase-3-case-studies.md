@@ -628,11 +628,13 @@ git push
 
 ### Task 3: AegisAI and Assetize diagrams
 
+> AegisAI built as written. Assetize revised after the Chrome review: 200-wide boxes with 110-unit gaps so the horizontal labels fit, "instant hash" instead of the longer label, the region renamed "Repository boundary" with the Phase 2 fact as a note inside it so the elbow to Repositories no longer crosses the label, and the right-hand note shortened to end before the region edge.
+
 **Files:**
 - Create: `src/components/diagrams/aegisai.ts`, `src/components/diagrams/assetize.ts`
 - Modify: `src/components/diagrams/index.ts`
 
-- [ ] **Step 1: AegisAI spec**
+- [x] **Step 1: AegisAI spec**
 
 ```ts
 // src/components/diagrams/aegisai.ts
@@ -673,7 +675,7 @@ export const aegisai: DiagramSpec = {
 };
 ```
 
-- [ ] **Step 2: Assetize spec**
+- [x] **Step 2: Assetize spec**
 
 ```ts
 // src/components/diagrams/assetize.ts
@@ -711,7 +713,7 @@ export const assetize: DiagramSpec = {
 
 Add both to `DIAGRAMS` in `index.ts`.
 
-- [ ] **Step 3: Verify and commit**
+- [x] **Step 3: Verify and commit**
 
 Run: `pnpm test && pnpm typecheck && pnpm lint`. Chrome `/work/aegisai` and `/work/assetize` at 1440px: the rule ladder reads top to bottom with "no" between rungs and the verdicts on the right; the Assetize layering reads top to bottom with the dashed region around the repositories and the gold chain box.
 

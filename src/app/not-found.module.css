@@ -1,0 +1,13 @@
+.main {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-2);
+}

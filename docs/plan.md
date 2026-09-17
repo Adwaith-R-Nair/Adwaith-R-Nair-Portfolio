@@ -2630,7 +2630,7 @@ git push
 **Interfaces:**
 - Produces: `/work/praman`, `/work/honora`, `/work/aegisai`, `/work/assetize`, statically generated. `<CaseStudy project />` renders every field as prose; Phase 3 adds diagrams and the large proof element into the slot marked below.
 
-- [ ] **Step 1: CaseStudy component**
+- [x] **Step 1: CaseStudy component**
 
 ```tsx
 // src/components/work/CaseStudy.tsx
@@ -2839,7 +2839,7 @@ export function CaseStudy({ project: p }: { project: Project }) {
 }
 ```
 
-- [ ] **Step 2: Route and not-found**
+- [x] **Step 2: Route and not-found**
 
 ```tsx
 // src/app/work/[slug]/page.tsx
@@ -2895,12 +2895,12 @@ export default function NotFound() {
 }
 ```
 
-- [ ] **Step 3: Verify**
+- [x] **Step 3: Verify**
 
 Run: `pnpm build`
 Expected: route table lists `/work/[slug]` with four static paths. `pnpm start`, open `/work/honora`: the Sepolia address is a gold link. `/work/nexus` returns the not-found page.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add src/components/work src/app/work src/app/not-found.tsx

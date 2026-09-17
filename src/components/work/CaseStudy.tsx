@@ -1,0 +1,108 @@
+import type { ReactNode } from "react";
+import Link from "next/link";
+import { Eyebrow } from "@/components/ui/Eyebrow";
+import { Figures } from "@/components/ui/Figures";
+import { Prose } from "@/components/ui/Prose";
+import { StatusChip } from "@/components/ui/StatusChip";
+import { flagships, stackFor, type Project } from "@/content";
+import styles from "./CaseStudy.module.css";
+
+function Block({ id, title, children }: { id: string; title: string; children: ReactNode }) {
+  return (
+    <section className={styles.block} aria-labelledby={`${id}-t`}>
+      <h2 id={`${id}-t`} className={styles.blockTitle}>{title}</h2>
+      <div className={styles.blockBody}>{children}</div>
+    </section>
+  );
+}
+
+function Titled({ items }: { items: { title: string; body: string }[] }) {
+  return (
+    <dl className={styles.titled}>
+      {items.map((d) => (
+        <div key={d.title}>
+          <dt>{d.title}</dt>
+          <dd>{d.body}</dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
+/** Full case study. Phase 3 adds the architecture diagram and the large on-chain proof element. */
+export function CaseStudy({ project: p }: { project: Project }) {
+  const list = flagships();
+  const i = list.findIndex((x) => x.slug === p.slug);
+  const prev = list[(i + list.length - 1) % list.length]!;
+  const next = list[(i + 1) % list.length]!;
+
+  return (
+    <article className={styles.article}>
+      <header className={styles.head}>
+        <div className={styles.meta}>
+          <Link href="/#cases" className={styles.back}>Adwaith R Nair</Link>
+          <StatusChip status={p.status} />
+        </div>
+        <Eyebrow>{p.context}</Eyebrow>
+        <h1 className={styles.title}>
+          {p.name}
+          <span className={styles.tagline}>{p.tagline}</span>
+        </h1>
+        <p className={styles.period}>
+          {p.period}. <a href={p.repo} rel="noopener">Repository</a>.
+        </p>
+        <p className={styles.owned}>
+          <span className={styles.k}>What I owned</span>
+          {p.owned}
+        </p>
+        {p.team ? (
+          <ul className={styles.credits}>
+            {p.team.credits.map((c) => (
+              <li key={c.name}>
+                <strong>{c.name}</strong> {c.owned}
+              </li>
+            ))}
+          </ul>
+        ) : null}
+        {p.onchain ? (
+          <p className={styles.onchain}>
+            Verified on {p.onchain.network}:{" "}
+            <a href={p.onchain.explorer} rel="noopener" className="tnum">{p.onchain.address}</a>
+          </p>
+        ) : null}
+      </header>
+
+      {/* Phase 3: architecture diagram slot. */}
+
+      <Block id="problem" title="Problem">
+        <Prose><p>{p.problem}</p></Prose>
+      </Block>
+      <Block id="architecture" title="Architecture">
+        <Prose>{p.architecture.map((t, k) => <p key={k}>{t}</p>)}</Prose>
+      </Block>
+      {p.decisions.length ? (
+        <Block id="decisions" title="Decisions"><Titled items={p.decisions} /></Block>
+      ) : null}
+      <Block id="proof" title="Measured, not asserted">
+        <Figures items={p.proof} />
+      </Block>
+      {p.bugs?.length ? (
+        <Block id="bugs" title="Bugs worth telling"><Titled items={p.bugs} /></Block>
+      ) : null}
+      <Block id="limits" title="Honest limits">
+        <ul className={styles.limits}>{p.limits.map((l) => <li key={l}>{l}</li>)}</ul>
+      </Block>
+      {p.scale?.length ? (
+        <Block id="scale" title="Scale"><Figures items={p.scale} /></Block>
+      ) : null}
+      <Block id="stack" title="Stack">
+        <ul className={styles.stack}>{stackFor(p.slug).map((s) => <li key={s.key}>{s.name}</li>)}</ul>
+      </Block>
+
+      <nav className={styles.neighbours} aria-label="Other case studies">
+        <Link href={`/work/${prev.slug}`}>Previous: {prev.name}</Link>
+        <Link href={`/work/${next.slug}`}>Next: {next.name}</Link>
+      </nav>
+    </article>
+  );
+}

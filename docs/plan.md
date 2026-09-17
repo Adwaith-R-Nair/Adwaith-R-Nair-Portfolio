@@ -2453,7 +2453,7 @@ git push
 - Create: `src/components/how/HowIBuild.tsx`, `HowIBuild.module.css`, `src/components/contact/Contact.tsx`, `Contact.module.css`
 - Modify: `src/app/page.tsx`
 
-- [ ] **Step 1: HowIBuild**
+- [x] **Step 1: HowIBuild**
 
 ```tsx
 // src/components/how/HowIBuild.tsx
@@ -2495,7 +2495,7 @@ export function HowIBuild() {
 }
 ```
 
-- [ ] **Step 2: Contact**
+- [x] **Step 2: Contact**
 
 ```tsx
 // src/components/contact/Contact.tsx
@@ -2574,7 +2574,7 @@ export function Contact() {
 }
 ```
 
-- [ ] **Step 3: Finish page.tsx**
+- [x] **Step 3: Finish page.tsx**
 
 ```tsx
 // src/app/page.tsx, final
@@ -2609,7 +2609,7 @@ export default function Home() {
 }
 ```
 
-- [ ] **Step 4: Verify and commit**
+- [x] **Step 4: Verify and commit**
 
 Run: `pnpm check && pnpm build`
 Expected: clean. In Chrome, the full page scrolls from hero to contact with consistent rhythm. Résumé link opens `/resume.pdf`.

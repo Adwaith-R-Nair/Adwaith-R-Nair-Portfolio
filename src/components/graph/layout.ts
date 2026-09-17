@@ -20,17 +20,17 @@ export const VIEWBOX = { w: 1000, h: 600 } as const;
 /** Desktop. Praman is the hub at top centre. Labels sit on the side of each node that faces away from the graph. */
 export const NODE_POSITIONS: Record<Slug, NodePos> = {
   praman: { x: 500, y: 90, anchor: "middle", dx: 0, dy: -30 },
-  honora: { x: 160, y: 240, anchor: "end", dx: -20, dy: 5 },
-  aegisai: { x: 840, y: 235, anchor: "start", dx: 20, dy: 5 },
-  assetize: { x: 260, y: 470, anchor: "end", dx: -20, dy: 5 },
-  nexus: { x: 740, y: 465, anchor: "start", dx: 20, dy: 5 },
+  honora: { x: 230, y: 240, anchor: "end", dx: -20, dy: 5 },
+  aegisai: { x: 770, y: 235, anchor: "start", dx: 20, dy: 5 },
+  assetize: { x: 300, y: 470, anchor: "end", dx: -20, dy: 5 },
+  nexus: { x: 700, y: 465, anchor: "start", dx: 20, dy: 5 },
   zyra: { x: 500, y: 532, anchor: "middle", dx: 0, dy: 36 },
 };
 
 export const DESKTOP: GraphLayout = {
   viewbox: VIEWBOX,
   nodes: NODE_POSITIONS,
-  labelT: { "praman-assetize": 0.6, "praman-nexus": 0.6 },
+  labelT: { "praman-assetize": 0.6, "praman-nexus": 0.45 },
 };
 
 /**

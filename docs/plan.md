@@ -2916,11 +2916,11 @@ git push
 - Create: `playwright.config.ts`, `tests/e2e/pages.spec.ts`, `lighthouserc.json`, `.github/workflows/ci.yml`
 - Modify: `package.json` (devDependencies)
 
-- [ ] **Step 1: Install**
+- [x] **Step 1: Install**
 
 Run: `pnpm add -D @playwright/test@^1.63.0 @lhci/cli@^0.15.1 && pnpm exec playwright install chromium`
 
-- [ ] **Step 2: playwright.config.ts**
+- [x] **Step 2: playwright.config.ts**
 
 ```ts
 import { defineConfig, devices } from "@playwright/test";
@@ -2943,7 +2943,7 @@ export default defineConfig({
 });
 ```
 
-- [ ] **Step 3: The failing spec (fails until the server is built and started)**
+- [x] **Step 3: The failing spec (fails until the server is built and started)**
 
 ```ts
 // tests/e2e/pages.spec.ts
@@ -3017,12 +3017,12 @@ test("no horizontal overflow on mobile", async ({ page }, info) => {
 });
 ```
 
-- [ ] **Step 4: Run e2e**
+- [x] **Step 4: Run e2e**
 
 Run: `pnpm build && pnpm test:e2e`
 Expected: all tests pass on both projects. If "reduced motion removes transitions" fails, the cause is a component with `transition` declared after the global reduced-motion rule; fix by keeping the `!important` rule in globals.css (it already has it).
 
-- [ ] **Step 5: lighthouserc.json**
+- [x] **Step 5: lighthouserc.json**
 
 ```json
 {
@@ -3050,7 +3050,7 @@ Expected: all tests pass on both projects. If "reduced motion removes transition
 Run: `pnpm build && pnpm exec lhci autorun`
 Expected: performance 0.95 or higher on both URLs under the mobile preset. Record the numbers in the commit message.
 
-- [ ] **Step 6: GitHub Actions**
+- [x] **Step 6: GitHub Actions**
 
 ```yaml
 # .github/workflows/ci.yml
@@ -3084,11 +3084,11 @@ jobs:
 
 The `LHCI_GITHUB_APP_TOKEN` secret is optional; without it Lighthouse still runs and asserts, it just does not post a status.
 
-- [ ] **Step 7: Chrome review against design.md section 6**
+- [x] **Step 7: Chrome review against design.md section 6**
 
 Open the built site in Chrome at 1440px, 1024px and 390px. Check each of: rhythm between sections is even; no element uses a margin where a gap should be; every heading balances; figures use tabular numerals; the hairline weight is consistent; nothing looks like a card. Fix what fails in the components touched, as part of this task.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add package.json pnpm-lock.yaml playwright.config.ts tests/e2e lighthouserc.json .github
@@ -3098,6 +3098,8 @@ git push
 ```
 
 Phase 1 is done when: `pnpm check`, `pnpm build`, `pnpm test:e2e` and `lhci autorun` all pass locally, the GitHub Actions run is green, and the site has been reviewed in Chrome at three widths.
+
+**Phase 1 result, 2026-09-17.** 16 unit tests, 22 e2e tests across desktop and Pixel 7 profiles. Lighthouse mobile, median of 3: home performance 97, accessibility 100, best practices 96, SEO 100, CLS 0.000, LCP 2.6s simulated; `/work/praman` performance 99, LCP 2.2s simulated. The simulated LCP is above the spec's 2.0s real-device target; Phase 6 measures on hardware and the hero image is the lever.
 
 ---
 

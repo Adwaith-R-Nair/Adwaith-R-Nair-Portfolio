@@ -1,0 +1,22 @@
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--text-label);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--c);
+}
+
+.chip[data-status="live"] { --c: var(--status-live); }
+.chip[data-status="testnet"] { --c: var(--status-testnet); }
+.chip[data-status="prototype"] { --c: var(--status-prototype); }
+.chip[data-status="demo"] { --c: var(--status-demo); }

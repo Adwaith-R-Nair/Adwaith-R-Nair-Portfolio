@@ -1,0 +1,10 @@
+.prose {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  max-width: var(--measure);
+}
+
+.prose p {
+  color: var(--ink);
+}

@@ -1286,13 +1286,13 @@ git push
 
 **Interfaces:**
 - Produces:
-  - `<Section id number title wide? children>`: numbered two-column shell. `id` is the anchor. `number` like `"01"`. `wide` switches to `--col-wide`.
+  - `<Section id title wide? children>`: two-column shell, mono label left, content right. `id` is the anchor. `wide` switches to `--col-wide`. No number: sections are not a sequence (design.md section 6).
   - `<Eyebrow>text</Eyebrow>`: uppercase tracked label.
   - `<StatusChip status />`: coloured chip with text.
   - `<Figures items={Labelled[]} />`: a dl ledger with tabular numerals.
   - `<Prose>children</Prose>`: paragraph column with `gap`.
 
-- [ ] **Step 1: Section**
+- [x] **Step 1: Section**
 
 ```tsx
 // src/components/ui/Section.tsx
@@ -1374,7 +1374,7 @@ export function Section({ id, number, title, wide = false, children }: Props) {
 }
 ```
 
-- [ ] **Step 2: Eyebrow, StatusChip, Figures, Prose**
+- [x] **Step 2: Eyebrow, StatusChip, Figures, Prose**
 
 ```tsx
 // src/components/ui/Eyebrow.tsx
@@ -1534,12 +1534,12 @@ export function Prose({ children }: { children: ReactNode }) {
 .prose p { color: var(--ink); }
 ```
 
-- [ ] **Step 3: Verify**
+- [x] **Step 3: Verify**
 
 Run: `pnpm typecheck && pnpm lint`
 Expected: clean (components unused for now; ESLint does not flag unused exports).
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add src/components/ui

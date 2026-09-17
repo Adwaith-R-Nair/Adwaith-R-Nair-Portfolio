@@ -1128,7 +1128,7 @@ git push
 **Interfaces:**
 - Produces: `edges: Edge[]` (seven), `stack: StackEntry[]`, `stackByBucket(bucket)`, `stackFor(slug)`.
 
-- [ ] **Step 1: Extend the test**
+- [x] **Step 1: Extend the test**
 
 Append:
 
@@ -1167,7 +1167,7 @@ describe("edges and stack", () => {
 Run: `pnpm test`
 Expected: FAIL, `edges` is not exported.
 
-- [ ] **Step 2: Write edges.ts**
+- [x] **Step 2: Write edges.ts**
 
 ```ts
 // src/content/edges.ts
@@ -1184,7 +1184,7 @@ export const edges: Edge[] = [
 ];
 ```
 
-- [ ] **Step 3: Write stack.ts**
+- [x] **Step 3: Write stack.ts**
 
 The `projects` arrays must match the `stack` keys in projects.ts exactly; the test enforces both directions. "Exploring" is Claude's draft for Adwaith to edit.
 
@@ -1257,7 +1257,7 @@ export const stackFor = (slug: Slug): StackEntry[] =>
   stack.filter((s) => s.projects.includes(slug));
 ```
 
-- [ ] **Step 4: Export and run**
+- [x] **Step 4: Export and run**
 
 Add to `src/content/index.ts`:
 
@@ -1269,7 +1269,7 @@ export { stack, stackByBucket, stackFor } from "./stack";
 Run: `pnpm test && pnpm typecheck`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/content tests/unit/content-rules.test.ts

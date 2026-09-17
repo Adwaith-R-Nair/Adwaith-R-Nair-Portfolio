@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { allStrings, bySlug, copy, flagships, identity, projects } from "@/content";
+import { allStrings, bySlug, copy, edges, flagships, identity, projects, stack } from "@/content";
 
 const BANNED = [
   "—",
@@ -52,5 +52,33 @@ describe("projects", () => {
       expect(p.limits.length, p.slug).toBeGreaterThan(0);
       expect(p.proof.length, p.slug).toBeGreaterThan(0);
     }
+  });
+});
+
+describe("edges and stack", () => {
+  const slugs = new Set(projects.map((p) => p.slug));
+
+  it("has the seven spec edges between real projects", () => {
+    expect(edges).toHaveLength(7);
+    for (const e of edges) {
+      expect(slugs.has(e.from), e.from).toBe(true);
+      expect(slugs.has(e.to), e.to).toBe(true);
+      expect(e.concern.length).toBeGreaterThan(10);
+    }
+  });
+
+  it("every project stack key exists in the stack list", () => {
+    const keys = new Set(stack.map((s) => s.key));
+    for (const p of projects) for (const k of p.stack) expect(keys.has(k), `${p.slug}:${k}`).toBe(true);
+  });
+
+  it("every stack entry's projects actually list it", () => {
+    for (const s of stack) {
+      for (const slug of s.projects) expect(bySlug(slug).stack, `${s.key} <- ${slug}`).toContain(s.key);
+    }
+  });
+
+  it("no banned copy in edges or stack", () => {
+    expect([...violations(edges, "edges"), ...violations(stack, "stack")]).toEqual([]);
   });
 });

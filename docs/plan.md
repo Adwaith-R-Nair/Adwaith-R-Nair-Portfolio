@@ -1785,6 +1785,8 @@ git push
 
 ### Task 8: The project graph as inline SVG
 
+> Built as written, then revised after the Chrome review: the viewBox is 1000x600 (not 720) so the graph fits one viewport, edge labels are horizontal and sit in a ground-coloured gap cut into the line instead of rotating along it, node labels take a `dx` offset so they sit on the outward side of each node, two labels are placed at t = 0.6 along their edge to avoid touching, and the graph heading has no italic accent. Code in the repo is the source of truth for this task.
+
 **Files:**
 - Create: `src/components/graph/layout.ts`, `Graph.tsx`, `Graph.module.css`, `tests/unit/graph-layout.test.ts`
 - Modify: `src/app/page.tsx`
@@ -1792,7 +1794,7 @@ git push
 **Interfaces:**
 - Produces: `NODE_POSITIONS: Record<Slug, {x: number; y: number; anchor: "start" | "middle" | "end"; dy: number}>` in a `0 0 1000 720` viewBox; `edgeGeometry(edge)` returning endpoints and label midpoint; `<Graph />` with `id="graph"`. Phase 2 reads `[data-graph-node]` elements' bounding boxes to place the particle constellation on top of this exact layout.
 
-- [ ] **Step 1: Failing layout test**
+- [x] **Step 1: Failing layout test**
 
 ```ts
 // tests/unit/graph-layout.test.ts
@@ -1834,7 +1836,7 @@ describe("graph layout", () => {
 Run: `pnpm test tests/unit/graph-layout.test.ts`
 Expected: FAIL, cannot resolve `@/components/graph/layout`.
 
-- [ ] **Step 2: layout.ts**
+- [x] **Step 2: layout.ts**
 
 Praman is the hub at top centre. Positions echo the reference constellation but spread for legibility.
 
@@ -1875,7 +1877,7 @@ export function edgeGeometry(edge: Edge) {
 Run: `pnpm test tests/unit/graph-layout.test.ts`
 Expected: PASS.
 
-- [ ] **Step 3: Graph component**
+- [x] **Step 3: Graph component**
 
 ```tsx
 // src/components/graph/Graph.tsx
@@ -2043,7 +2045,7 @@ export function Graph() {
 }
 ```
 
-- [ ] **Step 4: Add to page.tsx after `<Thesis />`**
+- [x] **Step 4: Add to page.tsx after `<Thesis />`**
 
 ```tsx
 import { Graph } from "@/components/graph/Graph";
@@ -2051,14 +2053,14 @@ import { Graph } from "@/components/graph/Graph";
 <Graph />
 ```
 
-- [ ] **Step 5: Verify in Chrome**
+- [x] **Step 5: Verify in Chrome**
 
 Expected at desktop: six nodes, seven hairline edges with rotated concern labels along them, Praman at the top. Hovering an edge brightens it and its label. Tabbing reaches every node and shows the gold focus state. At 390px: the SVG is gone and the seven-line list appears.
 
 Run: `pnpm test && pnpm typecheck && pnpm lint`
 Expected: PASS, clean.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/components/graph tests/unit/graph-layout.test.ts src/app/page.tsx

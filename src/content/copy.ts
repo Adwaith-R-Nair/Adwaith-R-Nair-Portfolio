@@ -10,7 +10,7 @@ export const copy = {
   },
   graph: {
     eyebrow: "Selected work",
-    heading: ["Six systems, ", "one question", "."],
+    heading: "Six systems, one question.",
     body: "Every edge is a concern two projects genuinely share, in the code, not in the copy.",
   },
   cases: { title: "Case studies" },

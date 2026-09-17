@@ -52,12 +52,15 @@ void main() {
   // Elliptical fade at the shoulders, matching the CSS mask on the static image.
   float ed = length((aP0.xy - vec2(0.0, 0.14)) / vec2(0.51, 0.74));
   vAlpha = 1.0 - smoothstep(0.46, 0.96, ed) * uW0;
+  // Dense states (graph, line) would read as solid blobs at full size and alpha.
+  float thin = 1.0 - 0.45 * uW2 - 0.35 * uW3;
+  vAlpha *= 1.0 - 0.35 * uW2 - 0.35 * uW3;
 
   vec3 c = mix(aColor, uAccent, clamp(uW1 * 0.9 + uW2 * 0.55 + uW3 * 0.9, 0.0, 1.0));
   vCol = mix(c, uGold, uW2 * 0.35) * (1.0 + glow * 0.75);
 
   vec4 mv = modelViewMatrix * vec4(p, 1.0);
-  gl_PointSize = aSize * uSize * uDpr * (8.2 / -mv.z) * (1.0 + glow * 0.35);
+  gl_PointSize = aSize * uSize * uDpr * (8.2 / -mv.z) * (1.0 + glow * 0.35) * thin;
   gl_Position = projectionMatrix * mv;
 }
 `;

@@ -136,3 +136,9 @@
     color: var(--muted);
   }
 }
+
+/* When the particles have settled onto the graph, the drawn lines and dots step back. */
+:global(html[data-particles="on"]) .edges line,
+:global(html[data-particles="on"]) .node circle {
+  opacity: 0.2;
+}

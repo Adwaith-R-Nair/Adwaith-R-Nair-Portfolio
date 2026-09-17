@@ -38,7 +38,7 @@ export interface HeroRenderer {
   resize(width: number, height: number): void;
   unitsPerPixel(): number;
   visibleSize(): { w: number; h: number };
-  frame(timeMs: number): void;
+  frame(timeMs: number, dtMs: number): void;
   dispose(): void;
 }
 
@@ -126,9 +126,10 @@ export function createRenderer(
     uniforms.uMouse.value.copy(camera.position).add(v.multiplyScalar(-camera.position.z / v.z));
   }
 
-  function frame(timeMs: number): void {
+  function frame(timeMs: number, dtMs: number): void {
     uniforms.uTime.value = timeMs * 0.001;
-    const k = reduced ? 1 : 0.075;
+    // Time-based easing, so states converge in the same wall time at any frame rate.
+    const k = reduced ? 1 : 1 - Math.exp(-dtMs / 180);
     cur.w0 += (target.w0 - cur.w0) * k;
     cur.w1 += (target.w1 - cur.w1) * k;
     cur.w2 += (target.w2 - cur.w2) * k;
@@ -140,8 +141,9 @@ export function createRenderer(
     if (!reduced) {
       // Parallax replaces deformation: the portrait turns a few degrees toward the cursor.
       const amt = cur.w0 * 0.075;
-      rotY += ((hasPointer ? mx : 0) * amt - rotY) * 0.06;
-      rotX += ((hasPointer ? -my : 0) * amt * 0.7 - rotX) * 0.06;
+      const kr = 1 - Math.exp(-dtMs / 220);
+      rotY += ((hasPointer ? mx : 0) * amt - rotY) * kr;
+      rotX += ((hasPointer ? -my : 0) * amt * 0.7 - rotX) * kr;
       uniforms.uRot.value.set(rotY, rotX);
     }
     renderer.render(scene, camera);

@@ -1003,6 +1003,8 @@ git push
 
 ### Task 5: Mount the particle layer over the static hero
 
+> Built as written, then revised after the Chrome review: easing is time-based (`1 - exp(-dt/tau)`) so states converge in the same wall time at any frame rate; frames over 80ms are treated as stalls and never feed the tier stepper; the idle callback has a 1200ms deadline because Chrome deferred it for 3.7s without one; points shrink and dim in the constellation and line states so 170k points do not read as solid blobs; the name sits in the upper third at 62% of viewport width with the thesis section stretched to 100svh while live; the contact line sits above the heading; `html[data-hero-tier]` and a read-only `window.__hero.state` expose tier, weights, offsets and layout for device testing. Code in the repo is the source of truth.
+
 **Files:**
 - Create: `src/hero/text.ts`, `src/hero/worker.ts`, `src/hero/mount.ts`, `src/hero/HeroEnhancer.tsx`
 - Modify: `src/app/page.tsx`, `src/styles/globals.css`, `src/components/graph/Graph.module.css`, `src/components/thesis/Thesis.module.css`
@@ -1011,7 +1013,7 @@ git push
 - Consumes: everything above, plus `edges` and `projects` from content for the constellation.
 - Produces: `mount(): Promise<() => void>` (returns a dispose function), `<HeroEnhancer />` which renders `<div id="hero-stage">` and idle-loads `mount`. Sets `html[data-particles="on"]` when live.
 
-- [ ] **Step 1: Text raster (main thread, after fonts are ready)**
+- [x] **Step 1: Text raster (main thread, after fonts are ready)**
 
 ```ts
 // src/hero/text.ts
@@ -1039,7 +1041,7 @@ export function rasteriseText(text: string, font: string, w = 2048, h = 512): Te
 }
 ```
 
-- [ ] **Step 2: Worker**
+- [x] **Step 2: Worker**
 
 ```ts
 // src/hero/worker.ts
@@ -1070,7 +1072,7 @@ ctx.onmessage = async (e: MessageEvent<Req>) => {
 };
 ```
 
-- [ ] **Step 3: Mount**
+- [x] **Step 3: Mount**
 
 ```ts
 // src/hero/mount.ts
@@ -1360,7 +1362,7 @@ export async function mount(): Promise<() => void> {
 }
 ```
 
-- [ ] **Step 4: Client component and page wiring**
+- [x] **Step 4: Client component and page wiring**
 
 ```tsx
 // src/hero/HeroEnhancer.tsx
@@ -1403,7 +1405,7 @@ import { HeroEnhancer } from "@/hero/HeroEnhancer";
       <main id="main">
 ```
 
-- [ ] **Step 5: CSS hooks**
+- [x] **Step 5: CSS hooks**
 
 Append to `src/styles/globals.css`:
 
@@ -1457,7 +1459,7 @@ Append to `src/components/thesis/Thesis.module.css`:
 }
 ```
 
-- [ ] **Step 6: Verify in Chrome**
+- [x] **Step 6: Verify in Chrome**
 
 Run: `pnpm typecheck && pnpm lint && pnpm test && pnpm build` then `pnpm start`.
 
@@ -1476,7 +1478,7 @@ Open at 500px: the same sequence; the constellation lands on the portrait graph 
 
 If the Turbopack worker URL fails to resolve, change `"./worker.ts"` to `"./worker"` in `mount.ts`.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add src/hero src/app/page.tsx src/styles/globals.css src/components/graph/Graph.module.css src/components/thesis/Thesis.module.css

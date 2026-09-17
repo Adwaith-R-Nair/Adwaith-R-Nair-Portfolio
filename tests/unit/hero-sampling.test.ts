@@ -104,7 +104,7 @@ describe("constellation and line", () => {
     const pos = sampleLine(500, mulberry32(2));
     for (let i = 0; i < 500; i++) {
       expect(Math.abs(pos[i * 3]!)).toBeLessThanOrEqual(0.5);
-      expect(Math.abs(pos[i * 3 + 1]!)).toBeLessThanOrEqual(0.006);
+      expect(Math.abs(pos[i * 3 + 1]!)).toBeLessThanOrEqual(0.003);
     }
   });
 });

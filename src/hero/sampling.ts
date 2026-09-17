@@ -150,7 +150,7 @@ export function sampleLine(n: number, rng: Rng = Math.random): Float32Array {
   const pos = new Float32Array(n * 3);
   for (let k = 0; k < n; k++) {
     pos[k * 3] = rng() - 0.5;
-    pos[k * 3 + 1] = (rng() - 0.5) * 0.01;
+    pos[k * 3 + 1] = (rng() - 0.5) * 0.006;
     pos[k * 3 + 2] = (rng() - 0.5) * 0.02;
   }
   return pos;

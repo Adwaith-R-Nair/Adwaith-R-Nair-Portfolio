@@ -19,3 +19,10 @@
   color: var(--muted);
   max-width: 58ch;
 }
+
+/* The name forms above the thesis text, so the text sits low while particles are live. */
+:global(html[data-particles="on"]) .thesis {
+  min-height: 100svh;
+  justify-content: flex-end;
+  padding-bottom: 10vh;
+}

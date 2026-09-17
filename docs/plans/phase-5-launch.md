@@ -87,10 +87,10 @@ export const absolute = (path: string): string => new URL(path, siteUrl()).toStr
 
 ### Task 4: E2E, deploy guide, docs
 
-- [ ] `tests/e2e/launch.spec.ts`: sitemap has five URLs; robots allows and names the sitemap; home has `og:image`, `og:title`, `twitter:card=summary_large_image`, a canonical link and a favicon link; `/opengraph-image` and `/icon` return `image/png`; the JSON-LD parses to a Person with the right name; a work page's `og:title` names the project.
-- [ ] `docs/deploy.md`: import the repo in Vercel (framework Next.js, defaults), first deploy, where `VERCEL_PROJECT_PRODUCTION_URL` comes from, how to set `NEXT_PUBLIC_SITE_URL` when the domain arrives and redeploy, how to attach the domain, and the checks to run on the live URL (sitemap, card preview via a social debugger, Lighthouse).
-- [ ] `docs/plan.md`: phases 4 and 5 rows; `docs/design.md` hosting row.
-- [ ] Commit: `test(launch): add launch e2e and the deploy guide; phase 5 complete`
+- [x] `tests/e2e/launch.spec.ts`: sitemap has seven URLs (home plus six projects, decisions/0003); robots allows and names the sitemap; home has `og:image`, `og:title`, `twitter:card=summary_large_image`, a canonical link and a favicon link; `/opengraph-image` and `/icon` return `image/png`; the JSON-LD parses to a Person with the right name; a work page's `og:title` names the project.
+- [x] `docs/deploy.md`: import the repo in Vercel (framework Next.js, defaults), first deploy, where `VERCEL_PROJECT_PRODUCTION_URL` comes from, how to set `NEXT_PUBLIC_SITE_URL` when the domain arrives and redeploy, how to attach the domain, and the checks to run on the live URL (sitemap, card preview via a social debugger, Lighthouse).
+- [x] `docs/plan.md`: phases 4 and 5 rows; `docs/design.md` hosting row.
+- [x] Commit: `test(launch): add launch e2e and the deploy guide; phase 5 complete`
 - [ ] Adwaith imports the repo in Vercel and deploys. Verify the live URL from here with curl and a card debugger.
 
 Phase 5 is done when: the site is live on a Vercel URL, `pnpm test:e2e` passes locally, CI is green, and pasting the live URL into a link preview shows the card.

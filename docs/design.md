@@ -27,7 +27,7 @@ Where this document and the build spec disagree, the build spec's non-negotiable
 | Unit tests | Vitest | Pure sampling, tier and copy-rule modules. |
 | Browser tests | Playwright | Smoke, no-JS, reduced-motion. |
 | Perf gate | Lighthouse CI, mobile preset, on every push | Fails under 90 performance. |
-| Hosting | Vercel | Zero-config Next.js, edge CDN, image optimisation. Domain attached later. |
+| Hosting | Vercel, Git integration | Zero-config Next.js, edge CDN, image optimisation. `src/lib/site.ts` resolves the canonical origin from `NEXT_PUBLIC_SITE_URL`, then Vercel's production URL, then localhost, so attaching a domain is an environment variable and a redeploy. See [deploy.md](./deploy.md). |
 
 ## 3. Repository layout
 
@@ -218,4 +218,19 @@ Interaction rules are the spec's: light and up to 4 degrees of parallax on the p
 
 Small commits on `main`, one per step in [plan.md](./plan.md). Adwaith runs every git command; Claude supplies them. Phases match the build spec's section 9. Each phase ends with a Chrome review and a Lighthouse run before its last commit.
 
-Still needed from Adwaith, none blocking: corrections to the drafted How I build copy and stack lists once they exist, a domain name before Phase 5.
+Still needed from Adwaith, none blocking: a domain name, which `NEXT_PUBLIC_SITE_URL` absorbs without a code change. The How I build copy and all three stack buckets were confirmed as written on 2026-09-17.
+
+## 11. Launch assets
+
+Generated at build time by Next.js file conventions, so none of them can drift from the content.
+
+| Asset | Route | Notes |
+|---|---|---|
+| Social card, home | `/opengraph-image`, `/twitter-image` | 1200x630. Portrait from the hero crop on the left, thesis line on the right, rendered by `ImageResponse` from the vendored Open Font License TTFs in `src/app/og/fonts/`. |
+| Social card, per project | `/work/[slug]/opengraph-image`, `twitter-image` | One per project, all six prerendered. Context, name, tagline, summary and the headline figure, from `projects.ts`. |
+| Favicon | `/icon/small`, `/icon/large` | 32 and 192 px. A serif "A" in the accent; from 96 px up, "RN" in gold mono as a signature. |
+| Apple touch icon | `/apple-icon` | 180 px, same mark. |
+| Sitemap | `/sitemap.xml` | Home plus all six project pages. |
+| Robots | `/robots.txt` | Allows every crawler, names the sitemap. |
+| Structured data | inline in `layout.tsx` | `Person`: name, job title, email, GitHub, LinkedIn, X, MITS Kochi, Kochi. |
+| Analytics | Vercel Analytics | Cookie-free, so no consent banner. Rendered only when `process.env.VERCEL` is set, because its script is served by Vercel's edge and would otherwise 404. |

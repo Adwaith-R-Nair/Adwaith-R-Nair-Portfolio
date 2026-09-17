@@ -1,3 +1,15 @@
+import { SiteHeader } from "@/components/header/SiteHeader";
+import { Hero } from "@/components/hero/Hero";
+import { Thesis } from "@/components/thesis/Thesis";
+
 export default function Home() {
-  return <h1>Adwaith R Nair</h1>;
+  return (
+    <>
+      <SiteHeader />
+      <main id="main">
+        <Hero />
+        <Thesis />
+      </main>
+    </>
+  );
 }

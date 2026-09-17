@@ -1558,7 +1558,7 @@ git push
 **Interfaces:**
 - Produces: `<SiteHeader />`, `<Hero />` with `id="hero"` and the static image element `id="hero-portrait"` (Phase 2 mounts the canvas over this), `<Thesis />` with `id="thesis"`.
 
-- [ ] **Step 1: SiteHeader**
+- [x] **Step 1: SiteHeader**
 
 ```tsx
 // src/components/header/SiteHeader.tsx
@@ -1606,7 +1606,7 @@ export function SiteHeader() {
 }
 ```
 
-- [ ] **Step 2: Hero**
+- [x] **Step 2: Hero**
 
 ```tsx
 // src/components/hero/Hero.tsx
@@ -1704,7 +1704,7 @@ export function Hero() {
 }
 ```
 
-- [ ] **Step 3: Thesis**
+- [x] **Step 3: Thesis**
 
 ```tsx
 // src/components/thesis/Thesis.tsx
@@ -1747,7 +1747,7 @@ export function Thesis() {
 }
 ```
 
-- [ ] **Step 4: Compose page.tsx**
+- [x] **Step 4: Compose page.tsx**
 
 ```tsx
 // src/app/page.tsx
@@ -1768,12 +1768,12 @@ export default function Home() {
 }
 ```
 
-- [ ] **Step 5: Verify in Chrome**
+- [x] **Step 5: Verify in Chrome**
 
 Run: `pnpm dev`. Open `http://localhost:3000` at 1440px and at 390px width.
 Expected: portrait centered with the vignette bleeding into the ground colour, name in Instrument Serif at the bottom, thesis section below with the italic accent phrase. No horizontal scroll. Check the Network panel: hero-crop is fetched with priority high, no layout shift when fonts arrive.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/components/header src/components/hero src/components/thesis src/app/page.tsx

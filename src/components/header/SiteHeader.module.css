@@ -1,0 +1,42 @@
+.header {
+  position: absolute;
+  inset: 0 0 auto 0;
+  z-index: 5;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--s-3) var(--s-4);
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.name {
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.nav {
+  display: flex;
+  gap: var(--s-3);
+}
+
+.nav a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.nav a:hover {
+  color: var(--ink);
+}
+
+@media (max-width: 720px) {
+  .header {
+    padding: var(--s-2);
+  }
+
+  .nav {
+    gap: var(--s-2);
+  }
+}

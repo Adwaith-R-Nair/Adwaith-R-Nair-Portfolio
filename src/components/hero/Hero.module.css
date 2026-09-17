@@ -1,0 +1,68 @@
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  align-items: end;
+  overflow: hidden;
+}
+
+.stage {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding-top: 6vh;
+}
+
+.portrait {
+  width: auto;
+  height: min(72vh, 900px);
+  max-width: 78vw;
+  object-fit: contain;
+  /* The crop is square-edged at the shoulders. Fade those edges into the ground
+     with a mask centred on the face, so the face stays crisp and nothing reads as a box. */
+  -webkit-mask-image: radial-gradient(ellipse 62% 74% at 50% 36%, #000 46%, transparent 96%);
+  mask-image: radial-gradient(ellipse 62% 74% at 50% 36%, #000 46%, transparent 96%);
+}
+
+.vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(to top, rgba(10, 8, 16, 0.92) 0%, rgba(10, 8, 16, 0.4) 22%, transparent 48%);
+}
+
+.caption {
+  position: relative;
+  z-index: 2;
+  width: var(--col-prose);
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--s-2);
+  padding-bottom: 8vh;
+}
+
+.name {
+  color: var(--ink);
+}
+
+.line {
+  font-size: var(--text-small);
+  color: var(--muted);
+  max-width: 46ch;
+}
+
+@media (max-width: 720px) {
+  .portrait {
+    height: min(58vh, 620px);
+  }
+
+  .caption {
+    padding-bottom: 10vh;
+  }
+}

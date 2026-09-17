@@ -1,0 +1,21 @@
+.thesis {
+  width: var(--col-prose);
+  margin-inline: auto;
+  min-height: 70svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: var(--s-4);
+  padding-block: var(--section-gap);
+}
+
+.heading {
+  font-size: var(--display-2);
+}
+
+.body {
+  color: var(--muted);
+  max-width: 58ch;
+}

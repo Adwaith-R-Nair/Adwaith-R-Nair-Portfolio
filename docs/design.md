@@ -124,7 +124,7 @@ Nine sections in spec order. Each is a server component in its own folder with i
 |---|---|---|
 | 0 | Hero | Static `<img>` of hero-crop.webp, name, location eyebrow. Canvas mounts over it later. |
 | 1 | Thesis | "I build systems that have to be trusted." plus the four-project paragraph. |
-| 2 | Graph | Six nodes, seven labelled edges, as inline SVG. Every node is a real link. Edge labels visible on hover and on focus. On phones the same data is a list of "A and B share: concern" lines. |
+| 2 | Graph | Six nodes, seven labelled edges, as inline SVG. Every node is a real link. Edge labels are horizontal, sitting in a gap cut into each line. On phones a second, portrait layout of the same graph renders with names only, and a list of "A and B: concern" lines beneath it is the legend, because the concern labels cannot fit beside the lines at that width. |
 | 3 | Case studies | Four entries: name, status chip, one proof line, "what I owned", link to `/work/<slug>`. |
 | 4 | Also built | Nexus and Zyra, plain two-column text. No decoration. |
 | 5 | Open source | One line. GSoC 2024, Oppia. |

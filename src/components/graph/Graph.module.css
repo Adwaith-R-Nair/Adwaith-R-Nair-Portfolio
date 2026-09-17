@@ -22,11 +22,19 @@
 
 .svg {
   width: 100%;
-  max-width: 980px;
   height: auto;
   margin-inline: auto;
   font-family: var(--font-mono);
   overflow: visible;
+}
+
+.wide {
+  max-width: 980px;
+}
+
+.narrow {
+  display: none;
+  max-width: 420px;
 }
 
 .edges rect {
@@ -97,8 +105,12 @@
 }
 
 @media (max-width: 720px) {
-  .svg {
+  .wide {
     display: none;
+  }
+
+  .narrow {
+    display: block;
   }
 
   .list {

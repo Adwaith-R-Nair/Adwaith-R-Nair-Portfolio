@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { edges, projects } from "@/content";
-import { NODE_POSITIONS, edgeGeometry, VIEWBOX } from "@/components/graph/layout";
+import { MOBILE, NODE_POSITIONS, edgeGeometry, VIEWBOX } from "@/components/graph/layout";
 
 describe("graph layout", () => {
   it("positions every project inside the viewbox with margin", () => {
@@ -31,6 +31,29 @@ describe("graph layout", () => {
       expect(g.t).toBeLessThanOrEqual(0.7);
       const cross = (g.x2 - g.x1) * (g.my - g.y1) - (g.y2 - g.y1) * (g.mx - g.x1);
       expect(Math.abs(cross)).toBeLessThan(1e-6);
+    }
+  });
+});
+
+describe("mobile graph layout", () => {
+  it("positions every project inside the portrait viewbox with margin", () => {
+    for (const p of projects) {
+      const n = MOBILE.nodes[p.slug];
+      expect(n.x).toBeGreaterThan(40);
+      expect(n.x).toBeLessThan(MOBILE.viewbox.w - 40);
+      expect(n.y).toBeGreaterThan(40);
+      expect(n.y).toBeLessThan(MOBILE.viewbox.h - 40);
+    }
+  });
+
+  it("keeps nodes at least 150 units apart", () => {
+    const list = projects.map((p) => MOBILE.nodes[p.slug]);
+    for (let i = 0; i < list.length; i++) {
+      for (let j = i + 1; j < list.length; j++) {
+        const a = list[i]!;
+        const b = list[j]!;
+        expect(Math.hypot(a.x - b.x, a.y - b.y)).toBeGreaterThanOrEqual(150);
+      }
     }
   });
 });

@@ -17,7 +17,7 @@ export function Mark({ px }: { px: number }): ReactElement {
       <div
         style={{
           position: "absolute",
-          left: showRn ? px * 0.09 : px * 0.02,
+          left: showRn ? px * 0.09 : px * 0.1,
           top: showRn ? px * -0.05 : px * -0.14,
           display: "flex",
           fontFamily: "Instrument Serif",

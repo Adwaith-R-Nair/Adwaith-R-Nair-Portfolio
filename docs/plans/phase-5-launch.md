@@ -77,11 +77,13 @@ export const absolute = (path: string): string => new URL(path, siteUrl()).toStr
 
 ### Task 3: Sitemap, robots, structured data, analytics
 
-- [ ] `src/app/sitemap.ts`: home plus the four flagship pages, `lastModified` at build time, `changeFrequency: "monthly"`.
-- [ ] `src/app/robots.ts`: allow all user agents everywhere, `sitemap: absolute("/sitemap.xml")`.
-- [ ] `src/app/layout.tsx`: a `<script type="application/ld+json">` with a `Person`: name, jobTitle "Blockchain and GenAI Engineer", url, email, sameAs [github, linkedin, x], alumniOf MITS Kochi, address Kochi, Kerala, India. And `<Analytics />` from `@vercel/analytics/next` at the end of body.
-- [ ] Verify: `pnpm build && pnpm budget` still under the limit; `curl /sitemap.xml` and `/robots.txt`; the JSON-LD parses.
-- [ ] Commit: `feat(launch): add sitemap, robots, person structured data and vercel analytics`
+> `<Analytics />` renders only when `process.env.VERCEL` is set at build. Its script lives at `/_vercel/insights/script.js`, which exists only on Vercel's edge; rendered everywhere, it 404ed and failed the "no console errors" e2e test locally and in CI. Checked in a browser: a `VERCEL=1` build injects and requests the script, a local build does not. The sitemap lists all six projects (decisions/0003), flagships at priority 0.8, Nexus and Zyra at 0.6.
+
+- [x] `src/app/sitemap.ts`: home plus the four flagship pages, `lastModified` at build time, `changeFrequency: "monthly"`.
+- [x] `src/app/robots.ts`: allow all user agents everywhere, `sitemap: absolute("/sitemap.xml")`.
+- [x] `src/app/layout.tsx`: a `<script type="application/ld+json">` with a `Person`: name, jobTitle "Blockchain and GenAI Engineer", url, email, sameAs [github, linkedin, x], alumniOf MITS Kochi, address Kochi, Kerala, India. And `<Analytics />` from `@vercel/analytics/next` at the end of body.
+- [x] Verify: `pnpm build && pnpm budget` still under the limit; `curl /sitemap.xml` and `/robots.txt`; the JSON-LD parses.
+- [x] Commit: `feat(launch): add sitemap, robots, person structured data and vercel analytics`
 
 ### Task 4: E2E, deploy guide, docs
 

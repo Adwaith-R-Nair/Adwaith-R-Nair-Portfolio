@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { IBM_Plex_Mono, Instrument_Serif } from "next/font/google";
 import type { ReactNode } from "react";
-import { siteUrl } from "@/lib/site";
+import { identity } from "@/content";
+import { absolute, siteUrl } from "@/lib/site";
 import "@/styles/tokens.css";
 import "@/styles/globals.css";
 import "@/styles/print.css";
@@ -52,12 +54,28 @@ export const viewport: Viewport = {
   colorScheme: "dark",
 };
 
+/** Person structured data for search engines. Only facts that are already on the page. */
+const person = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: identity.name,
+  jobTitle: "Blockchain and GenAI Engineer",
+  url: absolute("/"),
+  email: `mailto:${identity.email}`,
+  sameAs: [identity.github, identity.linkedin, identity.x],
+  alumniOf: { "@type": "CollegeOrUniversity", name: "Muthoot Institute of Technology and Science, Kochi" },
+  address: { "@type": "PostalAddress", addressLocality: "Kochi", addressRegion: "Kerala", addressCountry: "IN" },
+};
+
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={`${display.variable} ${mono.variable}`}>
       <body>
         <a className="skip-link" href="#main">Skip to content</a>
         {children}
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(person) }} />
+        {/* The beacon script is served by Vercel's edge only; elsewhere it would 404. */}
+        {process.env.VERCEL ? <Analytics /> : null}
       </body>
     </html>
   );

@@ -541,7 +541,7 @@ git push
 - Produces: types `Status`, `Slug`, `Project`, `Edge`, `StackEntry`, `StackBucket`; constants `identity`, `copy`; helpers `flagships()`, `bySlug(slug)`, `allContentStrings()`.
 - Later tasks add `projects`, `edges`, `stack` to `index.ts`.
 
-- [ ] **Step 1: Write types.ts**
+- [x] **Step 1: Write types.ts**
 
 ```ts
 // src/content/types.ts
@@ -608,7 +608,7 @@ export interface StackEntry {
 }
 ```
 
-- [ ] **Step 2: Write identity.ts and copy.ts**
+- [x] **Step 2: Write identity.ts and copy.ts**
 
 ```ts
 // src/content/identity.ts
@@ -668,7 +668,7 @@ export const copy = {
 } as const;
 ```
 
-- [ ] **Step 3: Write index.ts (partial; projects, edges, stack added in Tasks 4 and 5)**
+- [x] **Step 3: Write index.ts (partial; projects, edges, stack added in Tasks 4 and 5)**
 
 ```ts
 // src/content/index.ts
@@ -687,7 +687,7 @@ export function allStrings(value: unknown, path = "root"): { path: string; text:
 }
 ```
 
-- [ ] **Step 4: Write the failing copy-rule test**
+- [x] **Step 4: Write the failing copy-rule test**
 
 ```ts
 // tests/unit/content-rules.test.ts
@@ -718,12 +718,12 @@ describe("copy rules", () => {
 });
 ```
 
-- [ ] **Step 5: Run the test**
+- [x] **Step 5: Run the test**
 
 Run: `pnpm test`
 Expected: PASS, 1 test. (The test is written before projects.ts exists so that Task 4 extends it rather than writing content untested.)
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/content tests/unit/content-rules.test.ts

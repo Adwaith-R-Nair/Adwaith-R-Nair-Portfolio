@@ -122,8 +122,7 @@ export const projects: Project[] = [
     ],
     limits: [
       "University-caliber proof of concept, not a production deployment.",
-      "No multi-signature on role assignment.",
-      "No CI/CD yet.",
+      "CI/CD is in progress, not yet complete.",
     ],
     stack: ["solidity", "hardhat", "ethersjs", "nodejs", "express", "typescript", "mongodb", "ipfs"],
     onchain: {

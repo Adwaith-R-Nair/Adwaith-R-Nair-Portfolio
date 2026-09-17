@@ -11,3 +11,5 @@ export function allStrings(value: unknown, path = "root"): { path: string; text:
   }
   return [];
 }
+
+export { projects, flagships, bySlug } from "./projects";

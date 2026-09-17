@@ -742,7 +742,7 @@ git push
 **Interfaces:**
 - Produces: `projects: Project[]` in spec order (praman, honora, aegisai, assetize, nexus, zyra); `flagships()`, `bySlug(slug)`.
 
-- [ ] **Step 1: Extend the test first**
+- [x] **Step 1: Extend the test first**
 
 Append to `tests/unit/content-rules.test.ts` (move the `import` line up to the top of the file with the others):
 
@@ -784,7 +784,7 @@ describe("projects", () => {
 Run: `pnpm test`
 Expected: FAIL, `projects` is not exported.
 
-- [ ] **Step 2: Write projects.ts**
+- [x] **Step 2: Write projects.ts**
 
 Every value below is taken from build-spec.md section 6. Do not add claims that are not there.
 
@@ -1096,7 +1096,7 @@ export const bySlug = (slug: Slug): Project => {
 };
 ```
 
-- [ ] **Step 3: Export from index.ts**
+- [x] **Step 3: Export from index.ts**
 
 Add to `src/content/index.ts`:
 
@@ -1104,12 +1104,12 @@ Add to `src/content/index.ts`:
 export { projects, flagships, bySlug } from "./projects";
 ```
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm test`
 Expected: PASS, all tests.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/content tests/unit/content-rules.test.ts

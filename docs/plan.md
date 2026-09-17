@@ -289,7 +289,7 @@ git push
 **Interfaces:**
 - Produces: CSS custom properties listed in tokens.css; `--font-display` and `--font-mono` resolved from `next/font` variables; global classes `.sr-only`, `.skip-link`.
 
-- [ ] **Step 1: Write tokens.css**
+- [x] **Step 1: Write tokens.css**
 
 ```css
 /* Palette sampled from the source photograph. See docs/build-spec.md section 3. */
@@ -344,7 +344,7 @@ git push
 }
 ```
 
-- [ ] **Step 2: Write globals.css**
+- [x] **Step 2: Write globals.css**
 
 ```css
 *,
@@ -466,7 +466,7 @@ ol { padding-left: 0; list-style: none; }
 }
 ```
 
-- [ ] **Step 3: Rewrite layout.tsx with fonts and metadata**
+- [x] **Step 3: Rewrite layout.tsx with fonts and metadata**
 
 ```tsx
 // src/app/layout.tsx
@@ -517,12 +517,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 }
 ```
 
-- [ ] **Step 4: Verify**
+- [x] **Step 4: Verify**
 
 Run: `pnpm typecheck && pnpm lint && pnpm build`
 Expected: clean. Build output shows fonts downloaded (or a cached font notice). Open `pnpm dev` in Chrome: background is `#0a0810`, the h1 renders in Instrument Serif.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/styles src/app/layout.tsx

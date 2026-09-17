@@ -118,7 +118,7 @@ A unit test walks every string in `src/content/` and fails on: an em dash, the w
 
 ### Home (`/`)
 
-Nine sections in spec order. Each is a server component in its own folder with its own CSS module. Sections have stable ids so the hero can read their positions.
+Nine sections in spec order. Each is a server component in its own folder with its own CSS module. Sections have stable ids so the hero can read their positions. The italic accent phrase from the spec is used in the thesis and contact headings only.
 
 | # | Section | Renders |
 |---|---|---|
@@ -142,7 +142,7 @@ The diagram is drawn by hand as SVG in a React component per project, using the 
 
 The tokens in the build spec are the whole palette. This section is about how they are used.
 
-**Register.** The page is set like a technical document that happens to be beautiful. Section numbers in mono small caps at 10.5px with `.2em` tracking. Hairline rules, not boxes. No cards, no drop shadows, no glass, no gradient blobs, no icon grids, no rounded corners larger than 2px, no scroll-triggered fade-ups. The reader should feel that someone chose every line.
+**Register.** The page is set like a technical document that happens to be beautiful. Each section carries a mono label in small caps at 10.5px with `.2em` tracking in a left column, and nothing else: no section numbers, because the sections are not a sequence. Eyebrow labels appear only where the build spec uses them, the hero and the graph. Hairline rules, not boxes. No cards, no drop shadows, no glass, no gradient blobs, no icon grids, no rounded corners larger than 2px, no scroll-triggered fade-ups. The reader should feel that someone chose every line.
 
 **Type scale.** Display sizes from `clamp()` with a 1.25 ratio from 40px to 96px. Body 15px on desktop, 14px on phones, line-height 1.65, measure 65ch. Labels 10.5px uppercase tracked. Figures always `tabular-nums`. All headings `text-wrap: balance`.
 

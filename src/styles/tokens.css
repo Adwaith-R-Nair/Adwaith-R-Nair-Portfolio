@@ -1,0 +1,52 @@
+/* Palette sampled from the source photograph. See docs/build-spec.md section 3. */
+:root {
+  --ground: #0a0810;
+  --ground-2: #14101b;
+  --ink: #ede7f0;
+  --muted: #8e8ea9;
+  --accent: #d3b2a0;
+  --gold: #c9a227;
+  --hairline: rgba(142, 142, 169, 0.22);
+
+  /* Semantic status colours. Never the accent, never the gold. */
+  --status-live: #7fbf8e;
+  --status-testnet: #8fa8d9;
+  --status-prototype: #b48fd6;
+  --status-demo: #7fb8b3;
+
+  --font-display: var(--font-instrument-serif), "Iowan Old Style", Georgia, serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Type scale, 1.25 ratio from the body size, display sizes fluid. */
+  --text-body: 15px;
+  --text-small: 13px;
+  --text-label: 10.5px;
+  --display-1: clamp(44px, 7.2vw, 96px);
+  --display-2: clamp(32px, 4.6vw, 60px);
+  --display-3: clamp(24px, 3vw, 38px);
+  --leading-body: 1.65;
+  --tracking-label: 0.2em;
+
+  --measure: 65ch;
+  --col-prose: min(760px, 86vw);
+  --col-wide: min(1180px, 92vw);
+  --label-col: 160px;
+
+  /* Spacing scale, multiples of 8. Used through gap and padding only. */
+  --s-1: 8px;
+  --s-2: 16px;
+  --s-3: 24px;
+  --s-4: 32px;
+  --s-5: 48px;
+  --s-6: 64px;
+  --s-7: 96px;
+  --s-8: 144px;
+  --section-gap: clamp(96px, 14vh, 160px);
+}
+
+@media (max-width: 720px) {
+  :root {
+    --text-body: 14px;
+    --label-col: 0px;
+  }
+}

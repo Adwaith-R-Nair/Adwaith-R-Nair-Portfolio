@@ -1,0 +1,74 @@
+.hint {
+  color: var(--muted);
+  font-size: var(--text-small);
+}
+
+.projects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-4);
+  padding-block: var(--s-2);
+  border-block: 1px solid var(--hairline);
+}
+
+.project {
+  font-family: var(--font-display);
+  font-size: var(--display-3);
+  color: var(--ink);
+  cursor: default;
+  transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.project:focus-visible {
+  outline: none;
+  color: var(--accent);
+}
+
+.buckets {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-5);
+}
+
+.bucket {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+.bucketTitle {
+  font-family: var(--font-mono);
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.techs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1) var(--s-2);
+}
+
+.tech {
+  display: inline-block;
+  font-size: var(--text-small);
+  color: var(--muted);
+  padding: 2px 0;
+  border-bottom: 1px solid transparent;
+  cursor: default;
+  transition: opacity 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.tech:hover,
+.tech:focus-visible {
+  color: var(--ink);
+  border-bottom-color: var(--accent);
+  outline: none;
+}
+
+@media (max-width: 900px) {
+  .buckets {
+    grid-template-columns: 1fr;
+  }
+}

@@ -2302,7 +2302,7 @@ git push
 - Consumes: `stack`, `stackByBucket`, `projects`.
 - Produces: `<Stack />` (`id="stack"`). Inside the section, technologies carry `data-tech={key}` and `data-usedby="slug slug"`, project names carry `data-project={slug}` and `data-uses="key key"`. A generated `<style>` block makes hover or focus on either side highlight the other side. No JavaScript.
 
-- [ ] **Step 1: Stack component**
+- [x] **Step 1: Stack component**
 
 ```tsx
 // src/components/stack/Stack.tsx
@@ -2426,18 +2426,18 @@ export function Stack() {
 }
 ```
 
-- [ ] **Step 2: Add to page.tsx after `<OpenSource />`**
+- [x] **Step 2: Add to page.tsx after `<OpenSource />`**
 
 ```tsx
 import { Stack } from "@/components/stack/Stack";
 <Stack />
 ```
 
-- [ ] **Step 3: Verify in Chrome**
+- [x] **Step 3: Verify in Chrome**
 
 Expected: hovering "PostgreSQL" dims every project name except Praman and Assetize. Hovering "Honora" dims every technology except its eight. Keyboard Tab reaches technologies and projects and does the same. Nothing happens with JavaScript disabled beyond the plain lists, which is fine.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add src/components/stack src/app/page.tsx

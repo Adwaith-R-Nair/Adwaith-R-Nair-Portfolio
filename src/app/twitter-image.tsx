@@ -11,7 +11,7 @@ export default async function Image() {
   return new ImageResponse(
     <Card
       portrait={portrait}
-      eyebrow={`${identity.name}, Kochi`}
+      eyebrow={identity.name}
       title="I build systems that"
       titleEm="have to be trusted."
       body="Praman governs autonomous agents spending real money. Honora proves legal evidence was never altered. AegisAI decides when an AI may act alone. Assetize makes property records verifiable."

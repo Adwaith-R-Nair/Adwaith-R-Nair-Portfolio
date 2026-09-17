@@ -165,11 +165,12 @@ The hero is the only client-side enhancement. It is a real image first and a par
 ### Mount sequence
 
 1. Page paints. Content is complete.
-2. On `requestIdleCallback` (fallback `setTimeout` 200ms) the client component checks the device guess. Tier "none" stops here.
-3. `next/dynamic` loads the renderer chunk (three.js core plus our modules).
-4. The worker fetches hero-crop.webp, decodes it with `createImageBitmap`, runs importance sampling, text rasterisation via `OffscreenCanvas`, and constellation and line generation, and transfers the typed arrays back. If `OffscreenCanvas` is unavailable, sampling runs on the main thread in an idle callback, chunked.
-5. The renderer builds the geometry once at the guessed tier, renders one frame, and fades the canvas in over the image over 600ms. The image stays underneath, so a context loss is invisible.
-6. The measured stepper runs as in the spec: 40-frame warm-up, then the median of the last 50 frames every 50 frames, step down above 21ms, settle when it holds.
+2. On `requestIdleCallback` with a 1.2 s deadline (fallback `setTimeout` 200ms) the client component imports the layer. The device guess runs inside it; tier "none" stops there.
+3. The worker fetches hero-crop.webp, decodes it with `createImageBitmap`, runs importance sampling, and transfers the typed arrays back. If workers or `OffscreenCanvas` are unavailable, or the worker fails or exceeds 4 s, the same sampler runs on the main thread.
+4. Meanwhile, after `document.fonts.ready`, the main thread rasterises "ADWAITH" in the loaded serif and samples it, builds the line target, and reads the visible graph SVG's node positions to build the constellation in world units relative to the SVG's centre.
+5. The renderer builds the geometry once at the guessed tier. The canvas fades in over 600 ms while CSS fades the static image out. The particle portrait tracks the image's document rect each frame, so it sits exactly on the image and scrolls with the page until it dissolves. The shader carries an elliptical alpha fade matching the CSS mask on the image, so the two are indistinguishable at the crossover.
+6. The measured stepper runs as in the spec: 40-frame warm-up, then the median of the last 50 frames every 50 frames, step down above 21 ms, settle when it holds. Frames over 80 ms are stalls and are not counted.
+7. Easing is time-based, so states converge in the same wall time at any frame rate. `html[data-hero-tier]` and a read-only `window.__hero.state` expose the tier, weights and layout for device testing.
 
 ### Tiers
 
@@ -201,8 +202,8 @@ Interaction rules are the spec's: light and up to 4 degrees of parallax on the p
 | Budget | How it is met |
 |---|---|
 | LCP < 2.0s mid-tier Android | Hero image preloaded, 85 KB, no font swap, no client JS on the critical path. |
-| JS before WebGL < 90 KB gz | Next runtime plus one small client component. Measured with `next build` output and checked in CI. |
-| WebGL bundle lazy | `next/dynamic` with `ssr: false`, requested on idle. |
+| Initial JS < 150 KB gz (modern browsers) | Next 16 runtime is about 139 KB on its own; see decisions/0002. Our client code is under 10 KB. `pnpm budget` checks it in CI. |
+| WebGL bundle lazy | Dynamic `import()` from the one client component, requested on idle with a 1.2 s deadline. About 140 KB gz, never on the critical path. |
 | No layout shift | Every image has dimensions, fonts have size-adjusted fallbacks, canvas is `position: fixed` and never in flow. |
 | 60 / 45 fps | Tier stepping on measured medians. |
 | Lighthouse 90+ mobile | Lighthouse CI in GitHub Actions on every push. |

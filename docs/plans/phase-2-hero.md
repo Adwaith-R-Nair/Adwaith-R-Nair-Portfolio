@@ -18,7 +18,7 @@
 - Tier stepping changes only `setDrawRange` and `setPixelRatio`. Geometry is allocated once.
 - No layout reads inside the frame loop. Section rects are cached in document coordinates and combined with `scrollY`.
 - Render loop stops on `document.hidden`. Rendering is skipped while the canvas is fully transparent.
-- Initial JavaScript on `/` stays under 90 KB gzipped. The hero chunk is lazy.
+- Initial JavaScript on `/` stays under 150 KB gzipped for modern browsers (decisions/0002). The hero chunk is lazy.
 - Commit messages: `type(scope): summary`, short, no trailer. Adwaith runs git.
 
 ## Coordinate conventions
@@ -1494,7 +1494,7 @@ git push
 - Create: `tests/e2e/hero.spec.ts`, `scripts/budget.mjs`
 - Modify: `package.json` (script `budget`), `.github/workflows/ci.yml`, `docs/design.md` section 7, `docs/plan.md` phase table
 
-- [ ] **Step 1: Budget script**
+- [x] **Step 1: Budget script**
 
 ```js
 // scripts/budget.mjs
@@ -1537,7 +1537,7 @@ Add to `package.json` scripts: `"budget": "node scripts/budget.mjs"`.
 Run: `pnpm build && pnpm budget`
 Expected: initial JS under 90 KB, largest lazy chunk somewhere between 100 and 160 KB (three.js core). Record both numbers in the commit message.
 
-- [ ] **Step 2: E2E spec**
+- [x] **Step 2: E2E spec**
 
 ```ts
 // tests/e2e/hero.spec.ts
@@ -1585,15 +1585,15 @@ test("the home page logs no console errors with the layer active", async ({ page
 Run: `pnpm build && pnpm test:e2e`
 Expected: all Phase 1 tests still pass; the three new tests pass on desktop. On mobile (Pixel 7 profile) the mount test may skip if the emulated device reports no WebGL; skipping is acceptable, failing is not.
 
-- [ ] **Step 3: CI**
+- [x] **Step 3: CI**
 
 In `.github/workflows/ci.yml`, after `- run: pnpm build` add `- run: pnpm budget`.
 
-- [ ] **Step 4: Docs**
+- [x] **Step 4: Docs**
 
 In `docs/design.md` section 7, update the mount sequence to match what was built: the worker handles only the portrait (fetch, decode, importance sampling); the text raster runs on the main thread after fonts are ready so it can use the loaded serif; the portrait offset tracks the static image; the shader carries an elliptical alpha fade matching the CSS mask. In `docs/plan.md`, mark Phase 2 done in the phase table with the measured budget numbers.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add tests/e2e/hero.spec.ts scripts/budget.mjs package.json .github/workflows/ci.yml docs/design.md docs/plan.md docs/plans/phase-2-hero.md

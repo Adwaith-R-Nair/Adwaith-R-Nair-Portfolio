@@ -29,7 +29,7 @@
 |---|---|---|
 | 0 | Docs, assets, gitignore | Commit 0 below |
 | 1 | Static site: scaffold, tokens, content, every section, minimal case-study pages, tests, CI | Tasks 1 to 13 in this file |
-| 2 | Hero particle layer: sampling, tiers, worker, renderer, scroll states, mount over static image | `docs/plans/phase-2-hero.md`, written after the Phase 1 Chrome review |
+| 2 | Hero particle layer: sampling, tiers, worker, renderer, scroll states, mount over static image | `docs/plans/phase-2-hero.md`. Done 2026-09-17: 39 unit tests, 28 e2e, initial JS 139 KB gz (modern), hero chunk 140 KB gz lazy, mount at 1.1 s. |
 | 3 | Full case-study pages: SVG architecture diagrams, Honora proof element, neighbour navigation | `docs/plans/phase-3-case-studies.md` |
 | 4 | Stack highlighting polish, How I build final copy, contact line state for the particles | `docs/plans/phase-4-content.md` |
 | 5 | Social card, metadata, sitemap, analytics, domain, Vercel deploy | `docs/plans/phase-5-launch.md` |

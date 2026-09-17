@@ -21,7 +21,7 @@
 - Spacing only through `gap` and padding on containers, never per-element margins.
 - `prefers-reduced-motion: reduce` removes every transition and animation.
 - Status chip colours are separate tokens and never reuse `--accent` or `--gold`.
-- Commits are made by Adwaith. Each task ends with the exact commands to give him. Commit messages follow `type(scope): summary`, lowercase, no trailing period, ending with the `Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>` line.
+- Commits are made by Adwaith. Each task ends with the exact commands to give him, followed by a plain summary of what changed. Commit messages follow `type(scope): summary`, lowercase, short, no trailing period, no co-author trailer.
 
 ## Phase overview
 
@@ -45,9 +45,7 @@ Already prepared in the working tree. Adwaith runs:
 
 ```bash
 git add .gitignore docs public
-git commit -m "docs: add build spec, system design, first decision record and assets
-
-Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+git commit -m "docs: add build spec, system design, first decision record and assets"
 git remote add origin git@github.com:Adwaith-R-Nair/Adwaith-R-Nair-Portfolio.git
 git push -u origin main
 ```
@@ -106,7 +104,7 @@ tests/e2e/pages.spec.ts
 **Interfaces:**
 - Produces: `pnpm dev | build | start | lint | typecheck | test | test:e2e` scripts. Path alias `@/*` to `src/*`.
 
-- [ ] **Step 1: Write package.json**
+- [x] **Step 1: Write package.json**
 
 ```json
 {
@@ -143,7 +141,7 @@ tests/e2e/pages.spec.ts
 }
 ```
 
-- [ ] **Step 2: Write tsconfig.json**
+- [x] **Step 2: Write tsconfig.json**
 
 ```json
 {
@@ -170,7 +168,15 @@ tests/e2e/pages.spec.ts
 }
 ```
 
-- [ ] **Step 3: Write next.config.ts, eslint.config.mjs, vitest.config.ts**
+- [x] **Step 3: Write next.config.ts, eslint.config.mjs, vitest.config.ts, pnpm-workspace.yaml**
+
+pnpm 11 refuses to run any script while a dependency's build script is unapproved. `unrs-resolver` (pulled in by eslint-config-next) has one. Approve it in the workspace file, which pnpm 11 reads for settings; the `pnpm` field in package.json is ignored.
+
+```yaml
+# pnpm-workspace.yaml
+allowBuilds:
+  unrs-resolver: true
+```
 
 ```ts
 // next.config.ts
@@ -213,6 +219,7 @@ export default defineConfig({
   test: {
     include: ["tests/unit/**/*.test.ts"],
     environment: "node",
+    passWithNoTests: true,
   },
   resolve: {
     alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) },
@@ -220,7 +227,7 @@ export default defineConfig({
 });
 ```
 
-- [ ] **Step 4: Write the minimal app**
+- [x] **Step 4: Write the minimal app**
 
 ```tsx
 // src/app/layout.tsx
@@ -242,7 +249,7 @@ export default function Home() {
 }
 ```
 
-- [ ] **Step 5: Write README.md**
+- [x] **Step 5: Write README.md**
 
 ```markdown
 # Adwaith R Nair, portfolio
@@ -255,21 +262,19 @@ Server-rendered Next.js site. Content lives in `src/content/`. Design and decisi
     pnpm build
 ```
 
-- [ ] **Step 6: Install and verify**
+- [x] **Step 6: Install and verify**
 
 Run: `pnpm install && pnpm typecheck && pnpm lint && pnpm build`
 Expected: install succeeds, typecheck clean, lint clean, build prints a route table with `/` as static.
 
 Run: `pnpm test`
-Expected: Vitest reports "No test files found" and exits 0 (or exits 1 with that message; either is acceptable at this step, it is fixed in Task 3). If it exits 1, add `"passWithNoTests": true` under `test` in vitest.config.ts.
+Expected: Vitest reports no test files and exits 0. Note that `next build` rewrites `"jsx"` in tsconfig.json to `"react-jsx"`; commit that change.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
-git add package.json pnpm-lock.yaml tsconfig.json next.config.ts eslint.config.mjs vitest.config.ts README.md src/app
-git commit -m "chore: scaffold next.js 16 app with typescript, eslint and vitest
-
-Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+git add package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.json next.config.ts eslint.config.mjs vitest.config.ts README.md src/app docs/plan.md
+git commit -m "chore: scaffold next.js 16 app with typescript, eslint and vitest"
 git push
 ```
 
@@ -521,9 +526,7 @@ Expected: clean. Build output shows fonts downloaded (or a cached font notice). 
 
 ```bash
 git add src/styles src/app/layout.tsx
-git commit -m "feat(design): add colour and type tokens, global styles and self-hosted fonts
-
-Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+git commit -m "feat(design): add colour and type tokens, global styles and self-hosted fonts"
 git push
 ```
 
@@ -724,9 +727,7 @@ Expected: PASS, 1 test. (The test is written before projects.ts exists so that T
 
 ```bash
 git add src/content tests/unit/content-rules.test.ts
-git commit -m "feat(content): add content types, identity, section copy and the copy-rule test
-
-Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+git commit -m "feat(content): add content types, identity, section copy and the copy-rule test"
 git push
 ```
 
@@ -1039,7 +1040,7 @@ export const projects: Project[] = [
     slug: "nexus",
     name: "Nexus",
     tagline: "multi-provider CLI AI agent",
-    status: "prototype",
+    status: "live",
     flagship: false,
     owned: "Everything. Solo.",
     repo: "https://github.com/Adwaith-R-Nair/Nexus-TUI",
@@ -1112,9 +1113,7 @@ Expected: PASS, all tests.
 
 ```bash
 git add src/content tests/unit/content-rules.test.ts
-git commit -m "feat(content): add all six projects with binding attribution and honest limits
-
-Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+git commit -m "feat(content): add all six projects with binding attribution and honest limits"
 git push
 ```
 
@@ -1274,9 +1273,7 @@ Expected: PASS.
 
 ```bash
 git add src/content tests/unit/content-rules.test.ts
-git commit -m "feat(content): add graph edges and the three stack buckets
-
-Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+git commit -m "feat(content): add graph edges and the three stack buckets"
 git push
 ```
 
@@ -1546,9 +1543,7 @@ Expected: clean (components unused for now; ESLint does not flag unused exports)
 
 ```bash
 git add src/components/ui
-git commit -m "feat(ui): add section shell, eyebrow, status chip, figures ledger and prose primitives
-
-Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+git commit -m "feat(ui): add section shell, eyebrow, status chip, figures ledger and prose primitives"
 git push
 ```
 
@@ -1782,9 +1777,7 @@ Expected: portrait centered with the vignette bleeding into the ground colour, n
 
 ```bash
 git add src/components/header src/components/hero src/components/thesis src/app/page.tsx
-git commit -m "feat(home): add header, static hero portrait and thesis section
-
-Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+git commit -m "feat(home): add header, static hero portrait and thesis section"
 git push
 ```
 
@@ -2069,9 +2062,7 @@ Expected: PASS, clean.
 
 ```bash
 git add src/components/graph tests/unit/graph-layout.test.ts src/app/page.tsx
-git commit -m "feat(graph): add the project constellation as server-rendered svg with a mobile list
-
-Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+git commit -m "feat(graph): add the project constellation as server-rendered svg with a mobile list"
 git push
 ```
 
@@ -2293,9 +2284,7 @@ Expected: four case entries in a three-column row each (index and chip, prose, h
 
 ```bash
 git add src/components/cases src/components/also src/components/oss src/app/page.tsx
-git commit -m "feat(home): add case-study list, also-built grid and open-source line
-
-Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+git commit -m "feat(home): add case-study list, also-built grid and open-source line"
 git push
 ```
 
@@ -2450,9 +2439,7 @@ Expected: hovering "PostgreSQL" dims every project name except Praman and Asseti
 
 ```bash
 git add src/components/stack src/app/page.tsx
-git commit -m "feat(stack): add stack buckets with css-only technology and project cross-highlighting
-
-Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+git commit -m "feat(stack): add stack buckets with css-only technology and project cross-highlighting"
 git push
 ```
 
@@ -2627,9 +2614,7 @@ Expected: clean. In Chrome, the full page scrolls from hero to contact with cons
 
 ```bash
 git add src/components/how src/components/contact src/app/page.tsx
-git commit -m "feat(home): add how-i-build and contact sections, home page complete
-
-Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+git commit -m "feat(home): add how-i-build and contact sections, home page complete"
 git push
 ```
 
@@ -2917,9 +2902,7 @@ Expected: route table lists `/work/[slug]` with four static paths. `pnpm start`,
 
 ```bash
 git add src/components/work src/app/work src/app/not-found.tsx
-git commit -m "feat(work): add statically generated case-study pages for the four flagships
-
-Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+git commit -m "feat(work): add statically generated case-study pages for the four flagships"
 git push
 ```
 
@@ -3108,9 +3091,7 @@ Open the built site in Chrome at 1440px, 1024px and 390px. Check each of: rhythm
 ```bash
 git add package.json pnpm-lock.yaml playwright.config.ts tests/e2e lighthouserc.json .github
 git add -u src
-git commit -m "test: add playwright smoke, no-js and reduced-motion suites, lighthouse ci and github actions
-
-Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+git commit -m "test: add playwright smoke, no-js and reduced-motion suites, lighthouse ci and github actions"
 git push
 ```
 

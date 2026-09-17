@@ -731,7 +731,7 @@ git push
 - Create: `src/styles/print.css`, `tests/e2e/work.spec.ts`
 - Modify: `src/components/work/CaseStudy.tsx`, `CaseStudy.module.css`, `src/app/layout.tsx`, `docs/plan.md`, `docs/design.md`
 
-- [ ] **Step 1: Neighbours**
+- [x] **Step 1: Neighbours**
 
 Replace the `<nav className={styles.neighbours}>` block in `CaseStudy.tsx`:
 
@@ -813,7 +813,7 @@ Replace the `.neighbours` rules in `CaseStudy.module.css`:
 }
 ```
 
-- [ ] **Step 2: Print stylesheet**
+- [x] **Step 2: Print stylesheet**
 
 ```css
 /* src/styles/print.css */
@@ -850,7 +850,7 @@ Replace the `.neighbours` rules in `CaseStudy.module.css`:
 
 Import it in `src/app/layout.tsx` after globals: `import "@/styles/print.css";`.
 
-- [ ] **Step 3: E2E**
+- [x] **Step 3: E2E**
 
 ```ts
 // tests/e2e/work.spec.ts
@@ -895,7 +895,7 @@ test("case studies never scroll sideways, diagram included", async ({ page }) =>
 });
 ```
 
-- [ ] **Step 4: Verify, docs, commit**
+- [x] **Step 4: Verify, docs, commit**
 
 Run: `pnpm build && pnpm test:e2e`. Expected: all pass on both projects. Chrome: print preview of `/work/honora` renders white with black text and no canvas.
 
@@ -908,3 +908,5 @@ git push
 ```
 
 Phase 3 is done when: unit and e2e suites pass, CI is green, and all four case-study pages have been reviewed in Chrome at 1440px and 500px.
+
+**Note, Task 4.** The Phase 1 e2e locator for "What I owned" became ambiguous once the AegisAI diagram's region label contained the same phrase; it now matches exactly. A print-media e2e test replaced the manual print-preview check.

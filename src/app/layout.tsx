@@ -3,6 +3,7 @@ import { IBM_Plex_Mono, Instrument_Serif } from "next/font/google";
 import type { ReactNode } from "react";
 import "@/styles/tokens.css";
 import "@/styles/globals.css";
+import "@/styles/print.css";
 
 const display = Instrument_Serif({
   weight: "400",

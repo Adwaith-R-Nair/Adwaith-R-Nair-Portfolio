@@ -136,7 +136,7 @@ Nine sections in spec order. Each is a server component in its own folder with i
 
 Statically generated for praman, honora, aegisai, assetize. Structure in order: name and status, "what I owned" and team credits, on-chain proof element if present (Honora's Etherscan link, set large), problem, architecture diagram as inline SVG, architecture prose, decisions, measured proof, bugs worth telling, honest limits, scale figures, stack, repo link, links to the two neighbouring case studies.
 
-The diagram is drawn by hand as SVG in a React component per project, using the site's tokens for colour and the mono face for labels. It is in the HTML payload and it prints.
+Each diagram is data: a typed spec of boxes, arrows, one dashed trust-boundary region and notes in `src/components/diagrams/<slug>.ts`, rendered by one server component into inline SVG using the tokens, the mono face, hairline boxes and the same label-in-a-gap device as the project graph. Unit tests check every spec for unique ids, real edge endpoints, boxes inside the frame, no overlaps and no banned copy. Under 720px the figure scrolls sideways inside its own container. A print stylesheet swaps the palette to black on white, hides the particle stage, and prints link targets after external links.
 
 ## 6. Design system
 

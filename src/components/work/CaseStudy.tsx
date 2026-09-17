@@ -110,8 +110,17 @@ export function CaseStudy({ project: p }: { project: Project }) {
       </Block>
 
       <nav className={styles.neighbours} aria-label="Other case studies">
-        <Link href={`/work/${prev.slug}`}>Previous: {prev.name}</Link>
-        <Link href={`/work/${next.slug}`}>Next: {next.name}</Link>
+        <Link href={`/work/${prev.slug}`} className={styles.neighbour}>
+          <span className={styles.nk}>Previous</span>
+          <span className={styles.nn}>{prev.name}</span>
+          <span className={styles.nt}>{prev.tagline}</span>
+        </Link>
+        <Link href="/#cases" className={styles.all}>All work</Link>
+        <Link href={`/work/${next.slug}`} className={`${styles.neighbour} ${styles.right}`}>
+          <span className={styles.nk}>Next</span>
+          <span className={styles.nn}>{next.name}</span>
+          <span className={styles.nt}>{next.tagline}</span>
+        </Link>
       </nav>
     </article>
   );

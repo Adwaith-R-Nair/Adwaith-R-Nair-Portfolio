@@ -29,7 +29,7 @@ for (const slug of FLAGSHIPS) {
     const res = await page.goto(`/work/${slug}`);
     expect(res?.status()).toBe(200);
     await expect(page.locator("h1")).toBeVisible();
-    await expect(page.getByText("What I owned")).toBeVisible();
+    await expect(page.getByText("What I owned", { exact: true })).toBeVisible();
     await expect(page.locator("#limits-t")).toHaveText("Honest limits");
   });
 }

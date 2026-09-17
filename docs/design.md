@@ -180,9 +180,9 @@ The hero is the only client-side enhancement. It is a real image first and a par
 | balanced | 95,000 | 1.60 | fine pointer and >= 4 cores, or >= 6 cores and >= 4 GB |
 | light | 46,000 | 1.25 | >= 4 cores |
 | minimal | 20,000 | 1.00 | everything else |
-| none | 0 | n/a | <= 2 cores, or <= 2 GB, or `saveData`, or no WebGL context |
+| none | 0 | n/a | <= 2 cores, or <= 2 GB, or `saveData`, or no WebGL context, or WebGL rasterised in software (SwiftShader, llvmpipe: every frame is a main-thread long task) |
 
-Point size is `700 / sqrt(activeCount)`. Stepping down changes only `setDrawRange` and `setPixelRatio`. Stepping up never happens.
+Point size is `700 / sqrt(activeCount)`. Stepping down changes only `setDrawRange` and `setPixelRatio`. Stepping up never happens. If the minimal tier still cannot hold twice the frame budget, the layer disposes itself and the static hero returns.
 
 ### States
 

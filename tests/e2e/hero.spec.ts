@@ -1,5 +1,13 @@
 import { expect, test } from "@playwright/test";
 
+test("the particle layer never loads when webgl is software rendered", async ({ page }) => {
+  // Playwright's headless Chromium is exactly that device. No hints spoofed.
+  await page.goto("/");
+  await page.waitForTimeout(2500);
+  expect(await page.locator("#hero-stage canvas").count()).toBe(0);
+  await expect(page.locator("html")).not.toHaveAttribute("data-particles", "on");
+});
+
 test("the particle layer never loads on a low-memory device", async ({ page }) => {
   await page.addInitScript(() => {
     Object.defineProperty(navigator, "deviceMemory", { get: () => 2 });
@@ -15,6 +23,8 @@ test("the particle layer mounts over the portrait when the device allows it", as
   await page.addInitScript(() => {
     Object.defineProperty(navigator, "deviceMemory", { get: () => 8 });
     Object.defineProperty(navigator, "hardwareConcurrency", { get: () => 8 });
+    // Headless Chromium only has software GL, which the layer refuses. Force past that check.
+    (window as Window & { __heroForce?: boolean }).__heroForce = true;
   });
   await page.goto("/");
   const webgl = await page.evaluate(() => {

@@ -24,10 +24,15 @@ export interface DeviceHints {
   minSide: number;
   saveData: boolean;
   webgl: boolean;
+  /** WebGL is present but rasterised on the CPU (SwiftShader, llvmpipe). Every frame is a long task. */
+  softwareGl: boolean;
 }
 
+/** Matches the renderer strings of CPU rasterisers. Anything else is assumed to be a GPU. */
+export const SOFTWARE_GL = /swiftshader|llvmpipe|softpipe|software|mesa offscreen|microsoft basic render/i;
+
 export function guessTier(h: DeviceHints): number {
-  if (!h.webgl || h.saveData) return NONE;
+  if (!h.webgl || h.softwareGl || h.saveData) return NONE;
   const mem = h.memory ?? 4;
   const cores = h.cores ?? 4;
   if (mem <= 2 || cores <= 2) return NONE;
@@ -50,7 +55,8 @@ const DEFAULTS: StepperOptions = { warmup: 40, window: 50, budgetMs: 21 };
 /**
  * Feed one frame time per rendered frame. After the warm-up (shader compilation), every
  * `window` frames the median is checked: above budget steps down one tier, at or under
- * budget settles. Never steps up.
+ * budget settles. Never steps up. At the floor, a median over twice the budget returns
+ * NONE: the device cannot hold even the minimal tier and the layer should be removed.
  */
 export class FrameStepper {
   tier: number;
@@ -81,6 +87,10 @@ export class FrameStepper {
     if (median > this.opts.budgetMs && this.tier < TIERS.length - 1) {
       this.tier += 1;
       return this.tier;
+    }
+    if (median > this.opts.budgetMs * 2) {
+      this.settled = true;
+      return NONE;
     }
     this.settled = true;
     return null;

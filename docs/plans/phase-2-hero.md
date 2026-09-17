@@ -1602,3 +1602,5 @@ git push
 ```
 
 Phase 2 is done when: all unit and e2e tests pass, `pnpm budget` passes, CI is green, and the nine expectations in Task 5 Step 6 have been seen in Chrome at 1440px and 500px.
+
+**Post-merge fix, 2026-09-17.** CI Lighthouse dropped the home page to 0.66 once the layer mounted: CI Chrome has no GPU, WebGL runs on SwiftShader, and every frame was a 200 ms main-thread task (TBT 5.5 s). Software-rendered WebGL is now tier "none" (renderer string match), and the stepper returns NONE at the floor when frames exceed twice the budget, which disposes the layer. A `window.__heroForce` hook lets the e2e mount test bypass the software check in headless Chromium.

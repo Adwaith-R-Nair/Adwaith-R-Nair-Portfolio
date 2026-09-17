@@ -5,7 +5,7 @@ import {
 } from "./sampling";
 import { weightsFor, type Layout, type Rect } from "./scroll";
 import { rasteriseText } from "./text";
-import { FrameStepper, NONE, TIERS, guessTier, type DeviceHints } from "./tiers";
+import { FrameStepper, NONE, SOFTWARE_GL, TIERS, guessTier, type DeviceHints } from "./tiers";
 
 const NAME = "ADWAITH";
 const IMAGE_URL = "/hero-crop.webp";
@@ -15,12 +15,22 @@ const FADE_MS = 600;
 export function hintsFromBrowser(): DeviceHints {
   const nav = navigator as Navigator & { deviceMemory?: number; connection?: { saveData?: boolean } };
   let webgl = false;
+  let softwareGl = false;
   try {
     const c = document.createElement("canvas");
-    webgl = !!(c.getContext("webgl2") ?? c.getContext("webgl"));
+    const gl = c.getContext("webgl2") ?? c.getContext("webgl");
+    webgl = !!gl;
+    if (gl) {
+      const ext = gl.getExtension("WEBGL_debug_renderer_info");
+      const renderer = String(ext ? gl.getParameter(ext.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER));
+      softwareGl = SOFTWARE_GL.test(renderer);
+      gl.getExtension("WEBGL_lose_context")?.loseContext();
+    }
   } catch {
     webgl = false;
   }
+  // Test hook: headless browsers only have software GL. Never set by the page itself.
+  if ((window as Window & { __heroForce?: boolean }).__heroForce === true) softwareGl = false;
   return {
     memory: nav.deviceMemory,
     cores: nav.hardwareConcurrency,
@@ -28,6 +38,7 @@ export function hintsFromBrowser(): DeviceHints {
     minSide: Math.min(innerWidth, innerHeight),
     saveData: nav.connection?.saveData === true,
     webgl,
+    softwareGl,
   };
 }
 
@@ -268,6 +279,11 @@ export async function mount(): Promise<() => void> {
       if (a > 0.005) {
         if (!stalled) {
           const step = stepper.push(dt);
+          if (step === NONE) {
+            // Even the minimal tier cannot hold the frame budget. Restore the static hero.
+            dispose();
+            return;
+          }
           if (step !== null) {
             renderer.setTier(step);
             document.documentElement.dataset.heroTier = TIERS[step]?.name ?? "";

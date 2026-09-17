@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { FrameStepper, NONE, TIERS, guessTier, type DeviceHints } from "@/hero/tiers";
+import { FrameStepper, NONE, SOFTWARE_GL, TIERS, guessTier, type DeviceHints } from "@/hero/tiers";
 
-const base: DeviceHints = { memory: 8, cores: 8, finePointer: true, minSide: 900, saveData: false, webgl: true };
+const base: DeviceHints = { memory: 8, cores: 8, finePointer: true, minSide: 900, saveData: false, webgl: true, softwareGl: false };
 
 describe("guessTier", () => {
   it("picks high for a strong desktop", () => expect(guessTier(base)).toBe(0));
@@ -15,6 +15,15 @@ describe("guessTier", () => {
     expect(guessTier({ ...base, cores: 2 })).toBe(NONE);
     expect(guessTier({ ...base, saveData: true })).toBe(NONE);
     expect(guessTier({ ...base, webgl: false })).toBe(NONE);
+  });
+  it("returns none when webgl is software rendered", () => {
+    expect(guessTier({ ...base, softwareGl: true })).toBe(NONE);
+    for (const r of ["Google SwiftShader", "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero)))", "llvmpipe (LLVM 15.0.7, 256 bits)", "Microsoft Basic Render Driver"]) {
+      expect(SOFTWARE_GL.test(r), r).toBe(true);
+    }
+    for (const r of ["ANGLE (Apple, Apple M2, OpenGL 4.1)", "Mali-G78", "Adreno (TM) 730", "NVIDIA GeForce RTX 3060/PCIe/SSE2"]) {
+      expect(SOFTWARE_GL.test(r), r).toBe(false);
+    }
   });
   it("treats unknown memory and cores as 4", () =>
     expect(guessTier({ ...base, memory: undefined, cores: undefined })).toBe(1));
@@ -48,10 +57,17 @@ describe("FrameStepper", () => {
     expect(s.tier).toBe(2);
   });
 
-  it("settles at the floor instead of stepping past it", () => {
+  it("settles at the floor when frames are only a little over budget", () => {
     const s = new FrameStepper(TIERS.length - 1);
     feed(s, 10, 40);
-    expect(feed(s, 40, 50)).toEqual([]);
+    expect(feed(s, 30, 50)).toEqual([]);
+    expect(s.settled).toBe(true);
+  });
+
+  it("gives up at the floor when frames are over twice the budget", () => {
+    const s = new FrameStepper(TIERS.length - 1);
+    feed(s, 10, 40);
+    expect(feed(s, 60, 50)).toEqual([NONE]);
     expect(s.settled).toBe(true);
   });
 

@@ -2,6 +2,9 @@ import { SiteHeader } from "@/components/header/SiteHeader";
 import { Hero } from "@/components/hero/Hero";
 import { Thesis } from "@/components/thesis/Thesis";
 import { Graph } from "@/components/graph/Graph";
+import { CaseList } from "@/components/cases/CaseList";
+import { AlsoBuilt } from "@/components/also/AlsoBuilt";
+import { OpenSource } from "@/components/oss/OpenSource";
 
 export default function Home() {
   return (
@@ -11,6 +14,9 @@ export default function Home() {
         <Hero />
         <Thesis />
         <Graph />
+        <CaseList />
+        <AlsoBuilt />
+        <OpenSource />
       </main>
     </>
   );

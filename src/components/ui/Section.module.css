@@ -1,5 +1,5 @@
 .section {
-  width: var(--col-prose);
+  width: var(--col-wide);
   margin-inline: auto;
   display: grid;
   grid-template-columns: var(--label-col) minmax(0, 1fr);
@@ -8,9 +8,6 @@
   border-top: 1px solid var(--hairline);
 }
 
-.wide {
-  width: var(--col-wide);
-}
 
 .title {
   align-self: start;
@@ -30,6 +27,12 @@
   flex-direction: column;
   gap: var(--s-4);
   min-width: 0;
+  /* Prose sections keep a readable width; the label column stays put across sections. */
+  max-width: 820px;
+}
+
+.wide .body {
+  max-width: none;
 }
 
 @media (max-width: 720px) {

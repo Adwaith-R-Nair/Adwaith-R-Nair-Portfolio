@@ -2079,7 +2079,7 @@ git push
 **Interfaces:**
 - Produces: `<CaseList />` (`id="cases"`), `<AlsoBuilt />` (`id="also"`), `<OpenSource />` (`id="oss"`). Case entries carry `data-project={slug}` and `data-uses="key key ..."` for the stack highlighting in Task 10.
 
-- [ ] **Step 1: CaseList**
+- [x] **Step 1: CaseList**
 
 ```tsx
 // src/components/cases/CaseList.tsx
@@ -2200,7 +2200,7 @@ export function CaseList() {
 }
 ```
 
-- [ ] **Step 2: AlsoBuilt and OpenSource**
+- [x] **Step 2: AlsoBuilt and OpenSource**
 
 ```tsx
 // src/components/also/AlsoBuilt.tsx
@@ -2268,7 +2268,7 @@ export function OpenSource() {
 .line { color: var(--ink); }
 ```
 
-- [ ] **Step 3: Add to page.tsx after `<Graph />`**
+- [x] **Step 3: Add to page.tsx after `<Graph />`**
 
 ```tsx
 import { CaseList } from "@/components/cases/CaseList";
@@ -2280,7 +2280,7 @@ import { OpenSource } from "@/components/oss/OpenSource";
 <OpenSource />
 ```
 
-- [ ] **Step 4: Verify in Chrome and commit**
+- [x] **Step 4: Verify in Chrome and commit**
 
 Expected: four case entries in a three-column row each (index and chip, prose, headline figure), collapsing to one column under 900px. Also built is two plain columns. Open source is one line.
 

@@ -1,0 +1,37 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--s-5);
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  font-size: var(--text-small);
+}
+
+.name {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: var(--display-3);
+}
+
+.name a {
+  text-decoration: none;
+}
+
+.name a:hover {
+  color: var(--accent);
+}
+
+.tagline {
+  font-family: var(--font-mono);
+  font-size: var(--text-small);
+  color: var(--muted);
+}
+
+.owned {
+  color: var(--muted);
+}

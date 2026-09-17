@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Section } from "@/components/ui/Section";
 import { copy, projects } from "@/content";
 import styles from "./AlsoBuilt.module.css";
@@ -11,7 +12,7 @@ export function AlsoBuilt() {
         {others.map((p) => (
           <li key={p.slug} className={styles.item} data-project={p.slug} data-uses={p.stack.join(" ")}>
             <h3 className={styles.name}>
-              <a href={p.repo} rel="noopener">{p.name}</a>
+              <Link href={`/work/${p.slug}`}>{p.name}</Link>
               <span className={styles.tagline}>{p.tagline}</span>
             </h3>
             <p>{p.summary}</p>

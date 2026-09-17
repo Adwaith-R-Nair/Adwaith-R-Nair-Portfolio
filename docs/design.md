@@ -126,7 +126,7 @@ Nine sections in spec order. Each is a server component in its own folder with i
 | 1 | Thesis | "I build systems that have to be trusted." plus the four-project paragraph. |
 | 2 | Graph | Six nodes, seven labelled edges, as inline SVG. Every node is a real link. Edge labels are horizontal, sitting in a gap cut into each line. On phones a second, portrait layout of the same graph renders with names only, and a list of "A and B: concern" lines beneath it is the legend, because the concern labels cannot fit beside the lines at that width. |
 | 3 | Case studies | Four entries: name, status chip, one proof line, "what I owned", link to `/work/<slug>`. |
-| 4 | Also built | Nexus and Zyra, plain two-column text. No decoration. |
+| 4 | Also built | Nexus and Zyra, plain two-column text. No decoration. Names link to their `/work` pages (decisions/0003). |
 | 5 | Open source | One line. GSoC 2024, Oppia. |
 | 6 | Stack | Three lists. Hovering or focusing a technology adds `data-active` to it, and CSS highlights the project names carrying that technology in the case-study list above. Pure CSS via `:has()`, with a JS-free fallback of nothing happening. |
 | 7 | How I build | Four short numbered paragraphs, drafted by Claude, corrected by Adwaith. |
@@ -134,7 +134,7 @@ Nine sections in spec order. Each is a server component in its own folder with i
 
 ### Case study (`/work/[slug]`)
 
-Statically generated for praman, honora, aegisai, assetize. Structure in order: name and status, "what I owned" and team credits, on-chain proof element if present (Honora's Etherscan link, set large), problem, architecture diagram as inline SVG, architecture prose, decisions, measured proof, bugs worth telling, honest limits, scale figures, stack, repo link, links to the two neighbouring case studies.
+Statically generated for all six projects (decisions/0003); Nexus and Zyra render as shorter case studies with the same component. Structure in order: name and status, "what I owned" and team credits, on-chain proof element if present (Honora's Etherscan link, set large), problem, architecture diagram as inline SVG, architecture prose, decisions, measured proof, bugs worth telling, honest limits, scale figures, stack, repo link, links to the two neighbouring case studies.
 
 Each diagram is data: a typed spec of boxes, arrows, one dashed trust-boundary region and notes in `src/components/diagrams/<slug>.ts`, rendered by one server component into inline SVG using the tokens, the mono face, hairline boxes and the same label-in-a-gap device as the project graph. Unit tests check every spec for unique ids, real edge endpoints, boxes inside the frame, no overlaps and no banned copy. Under 720px the figure scrolls sideways inside its own container. A print stylesheet swaps the palette to black on white, hides the particle stage, and prints link targets after external links.
 

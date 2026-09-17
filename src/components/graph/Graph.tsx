@@ -3,7 +3,7 @@ import { bySlug, copy, edges, projects } from "@/content";
 import { DESKTOP, MOBILE, edgeGeometry, labelWidth, type GraphLayout } from "./layout";
 import styles from "./Graph.module.css";
 
-const href = (slug: string, flagship: boolean, repo: string) => (flagship ? `/work/${slug}` : repo);
+const href = (slug: string) => `/work/${slug}`;
 
 interface SvgProps {
   layout: GraphLayout;
@@ -44,7 +44,7 @@ function GraphSvg({ layout, detail, className }: SvgProps) {
           return (
             <a
               key={p.slug}
-              href={href(p.slug, p.flagship, p.repo)}
+              href={href(p.slug)}
               className={styles.node}
               data-graph-node={p.slug}
               aria-label={`${p.name}, ${p.tagline}`}
@@ -67,7 +67,7 @@ function GraphSvg({ layout, detail, className }: SvgProps) {
 }
 
 /**
- * The project constellation as server-rendered SVG. Every node is a real link.
+ * The project constellation as server-rendered SVG. Every node links to its /work page.
  * Wide screens: landscape layout with concern labels sitting in a gap cut into each edge.
  * Phones: portrait layout with names only, and the list beneath is the legend.
  * Phase 2 reads the visible [data-graph-node] positions to settle the particles onto the layout.
@@ -91,9 +91,9 @@ export function Graph() {
           return (
             <li key={`${e.from}-${e.to}`}>
               <span className={styles.pair}>
-                <a href={href(from.slug, from.flagship, from.repo)}>{from.name}</a>
+                <a href={href(from.slug)}>{from.name}</a>
                 {" and "}
-                <a href={href(to.slug, to.flagship, to.repo)}>{to.name}</a>
+                <a href={href(to.slug)}>{to.name}</a>
               </span>
               <span className={styles.concern}>{e.concern}</span>
             </li>

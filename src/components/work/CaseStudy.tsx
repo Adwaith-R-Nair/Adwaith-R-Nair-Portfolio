@@ -6,7 +6,7 @@ import { Figures } from "@/components/ui/Figures";
 import { Prose } from "@/components/ui/Prose";
 import { StatusChip } from "@/components/ui/StatusChip";
 import { Proof } from "./Proof";
-import { flagships, stackFor, type Project } from "@/content";
+import { projects, stackFor, type Project } from "@/content";
 import styles from "./CaseStudy.module.css";
 
 function Block({ id, title, wide, children }: { id: string; title: string; wide?: boolean; children: ReactNode }) {
@@ -33,7 +33,7 @@ function Titled({ items }: { items: { title: string; body: string }[] }) {
 
 /** Full case study. Phase 3 adds the architecture diagram and the large on-chain proof element. */
 export function CaseStudy({ project: p }: { project: Project }) {
-  const list = flagships();
+  const list = projects;
   const i = list.findIndex((x) => x.slug === p.slug);
   const prev = list[(i + list.length - 1) % list.length]!;
   const next = list[(i + 1) % list.length]!;

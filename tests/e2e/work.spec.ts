@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 const FLAGSHIPS = ["praman", "honora", "aegisai", "assetize"];
+const ALL = [...FLAGSHIPS, "nexus", "zyra"];
 
 for (const slug of FLAGSHIPS) {
   test(`${slug} has a server-rendered, textual architecture diagram`, async ({ browser }) => {
@@ -22,7 +23,7 @@ test("honora's proof element links to the verified contract", async ({ page }) =
   await expect(proof).toContainText("Open on Etherscan");
 });
 
-test("neighbour navigation cycles through the four flagships", async ({ page }) => {
+test("neighbour navigation cycles through all six projects", async ({ page }) => {
   await page.goto("/work/praman");
   await page.getByRole("link", { name: /Next/ }).click();
   await expect(page).toHaveURL(/\/work\/honora$/);
@@ -31,7 +32,7 @@ test("neighbour navigation cycles through the four flagships", async ({ page }) 
 });
 
 test("case studies never scroll sideways, diagram included", async ({ page }) => {
-  for (const slug of FLAGSHIPS) {
+  for (const slug of ALL) {
     await page.goto(`/work/${slug}`);
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     expect(overflow, slug).toBeLessThanOrEqual(0);

@@ -1,18 +1,18 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { CaseStudy } from "@/components/work/CaseStudy";
-import { flagships, type Slug } from "@/content";
+import { projects, type Slug } from "@/content";
 
 type Params = { slug: string };
 
 export const dynamicParams = false;
 
 export function generateStaticParams(): Params[] {
-  return flagships().map((p) => ({ slug: p.slug }));
+  return projects.map((p) => ({ slug: p.slug }));
 }
 
 function find(slug: string) {
-  return flagships().find((p) => p.slug === (slug as Slug));
+  return projects.find((p) => p.slug === (slug as Slug));
 }
 
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {

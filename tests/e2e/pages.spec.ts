@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 const FLAGSHIPS = ["praman", "honora", "aegisai", "assetize"];
+const ALL = [...FLAGSHIPS, "nexus", "zyra"];
 const NAMES = ["Praman", "Honora", "AegisAI", "Assetize", "Nexus", "Zyra"];
 
 test("home renders every section", async ({ page }) => {
@@ -24,7 +25,7 @@ test("home is complete without javascript", async ({ browser }) => {
   await ctx.close();
 });
 
-for (const slug of FLAGSHIPS) {
+for (const slug of ALL) {
   test(`case study ${slug} renders with owned line and limits`, async ({ page }) => {
     const res = await page.goto(`/work/${slug}`);
     expect(res?.status()).toBe(200);

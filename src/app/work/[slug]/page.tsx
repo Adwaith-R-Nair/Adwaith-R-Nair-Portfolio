@@ -19,7 +19,14 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   const { slug } = await params;
   const p = find(slug);
   if (!p) return {};
-  return { title: p.name, description: p.summary };
+  const url = `/work/${p.slug}`;
+  return {
+    title: p.name,
+    description: p.summary,
+    alternates: { canonical: url },
+    openGraph: { type: "article", url, title: `${p.name}, ${p.tagline}`, description: p.summary },
+    twitter: { card: "summary_large_image", title: `${p.name}, ${p.tagline}`, description: p.summary },
+  };
 }
 
 export default async function WorkPage({ params }: { params: Promise<Params> }) {

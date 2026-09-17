@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Mono, Instrument_Serif } from "next/font/google";
 import type { ReactNode } from "react";
+import { siteUrl } from "@/lib/site";
 import "@/styles/tokens.css";
 import "@/styles/globals.css";
 import "@/styles/print.css";
@@ -22,11 +23,28 @@ const mono = IBM_Plex_Mono({
   fallback: ["ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
 });
 
+const description =
+  "I build systems that have to be trusted. Agentic payments governance, blockchain evidence integrity, AI decision layers and tokenized property records.";
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://adwaith-r-nair.vercel.app"),
+  metadataBase: siteUrl(),
   title: { default: "Adwaith R Nair", template: "%s · Adwaith R Nair" },
-  description:
-    "I build systems that have to be trusted. Agentic payments governance, blockchain evidence integrity, AI decision layers and tokenized property records.",
+  description,
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    siteName: "Adwaith R Nair",
+    locale: "en_IN",
+    url: "/",
+    title: "Adwaith R Nair",
+    description,
+  },
+  twitter: {
+    card: "summary_large_image",
+    creator: "@adwaith_r_nair",
+    title: "Adwaith R Nair",
+    description,
+  },
 };
 
 export const viewport: Viewport = {

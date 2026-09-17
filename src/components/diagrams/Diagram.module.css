@@ -1,0 +1,117 @@
+.figure {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  margin: 0;
+}
+
+.scroll {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  padding-block: var(--s-1);
+}
+
+.svg {
+  width: 100%;
+  height: auto;
+  font-family: var(--font-mono);
+  overflow: visible;
+}
+
+.caption {
+  font-size: var(--text-small);
+  color: var(--muted);
+  max-width: var(--measure);
+}
+
+.ink { --tone: var(--ink); }
+.muted { --tone: var(--muted); }
+.accent { --tone: var(--accent); }
+.gold { --tone: var(--gold); }
+
+.node rect {
+  fill: none;
+  stroke: var(--tone);
+  stroke-width: 1;
+}
+
+.node.muted rect {
+  stroke: var(--hairline);
+}
+
+.node .label {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  fill: var(--tone);
+}
+
+.node.muted .label {
+  fill: var(--muted);
+}
+
+.node .sub {
+  font-size: 10px;
+  letter-spacing: 0.02em;
+  fill: var(--muted);
+}
+
+.edge path {
+  fill: none;
+  stroke: var(--tone);
+  stroke-width: 1;
+}
+
+.edge.muted path {
+  stroke: var(--hairline);
+}
+
+.edge text {
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  fill: var(--muted);
+}
+
+.edge.accent text {
+  fill: var(--accent);
+}
+
+.edge.gold text {
+  fill: var(--gold);
+}
+
+.gap {
+  fill: var(--ground);
+}
+
+.arrowHead {
+  fill: none;
+  stroke: context-stroke;
+  stroke-width: 1;
+}
+
+.dashed rect,
+.dashed path {
+  stroke-dasharray: 3 4;
+}
+
+.region rect {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1;
+  stroke-dasharray: 2 5;
+  opacity: 0.7;
+}
+
+.region text {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  fill: var(--accent);
+}
+
+.note {
+  font-size: 10px;
+  letter-spacing: 0.02em;
+  fill: var(--muted);
+}

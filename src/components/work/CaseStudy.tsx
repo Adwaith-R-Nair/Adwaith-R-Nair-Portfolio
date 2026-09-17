@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
+import { Diagram, diagramFor } from "@/components/diagrams";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Figures } from "@/components/ui/Figures";
 import { Prose } from "@/components/ui/Prose";
@@ -7,11 +8,11 @@ import { StatusChip } from "@/components/ui/StatusChip";
 import { flagships, stackFor, type Project } from "@/content";
 import styles from "./CaseStudy.module.css";
 
-function Block({ id, title, children }: { id: string; title: string; children: ReactNode }) {
+function Block({ id, title, wide, children }: { id: string; title: string; wide?: boolean; children: ReactNode }) {
   return (
     <section className={styles.block} aria-labelledby={`${id}-t`}>
       <h2 id={`${id}-t`} className={styles.blockTitle}>{title}</h2>
-      <div className={styles.blockBody}>{children}</div>
+      <div className={wide ? `${styles.blockBody} ${styles.wideBody}` : styles.blockBody}>{children}</div>
     </section>
   );
 }
@@ -35,6 +36,7 @@ export function CaseStudy({ project: p }: { project: Project }) {
   const i = list.findIndex((x) => x.slug === p.slug);
   const prev = list[(i + list.length - 1) % list.length]!;
   const next = list[(i + 1) % list.length]!;
+  const diagram = diagramFor(p.slug);
 
   return (
     <article className={styles.article}>
@@ -72,7 +74,11 @@ export function CaseStudy({ project: p }: { project: Project }) {
         ) : null}
       </header>
 
-      {/* Phase 3: architecture diagram slot. */}
+      {diagram ? (
+        <Block id="diagram" title="Architecture, drawn" wide>
+          <Diagram spec={diagram} id={`diagram-${p.slug}`} />
+        </Block>
+      ) : null}
 
       <Block id="problem" title="Problem">
         <Prose><p>{p.problem}</p></Prose>

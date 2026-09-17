@@ -5,6 +5,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Figures } from "@/components/ui/Figures";
 import { Prose } from "@/components/ui/Prose";
 import { StatusChip } from "@/components/ui/StatusChip";
+import { Proof } from "./Proof";
 import { flagships, stackFor, type Project } from "@/content";
 import styles from "./CaseStudy.module.css";
 
@@ -66,13 +67,16 @@ export function CaseStudy({ project: p }: { project: Project }) {
             ))}
           </ul>
         ) : null}
-        {p.onchain ? (
-          <p className={styles.onchain}>
-            Verified on {p.onchain.network}:{" "}
-            <a href={p.onchain.explorer} rel="noopener" className="tnum">{p.onchain.address}</a>
-          </p>
-        ) : null}
       </header>
+
+      {p.onchain ? (
+        <Proof
+          network={p.onchain.network}
+          address={p.onchain.address}
+          explorer={p.onchain.explorer}
+          contract="EvidenceRegistry.sol, Solidity 0.8.24"
+        />
+      ) : null}
 
       {diagram ? (
         <Block id="diagram" title="Architecture, drawn" wide>

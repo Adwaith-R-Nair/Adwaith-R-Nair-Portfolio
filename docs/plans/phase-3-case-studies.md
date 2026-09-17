@@ -475,11 +475,13 @@ git push
 
 ### Task 2: Honora diagram and the on-chain proof element
 
+> Revised after the Chrome review: the diagram is 900x480 with the stores in the left column, the contract alone inside the region with its two notes above it, shorter edge labels ("hash", "fails closed", "file", "metadata"), and the AI route below the gates. The address in the proof element uses a `<wbr>` and `overflow-wrap: anywhere` instead of two spaced spans, so it stays whole on desktop and wraps on phones.
+
 **Files:**
 - Create: `src/components/diagrams/honora.ts`, `src/components/work/Proof.tsx`, `Proof.module.css`
 - Modify: `src/components/diagrams/index.ts`, `src/components/work/CaseStudy.tsx`, `CaseStudy.module.css`
 
-- [ ] **Step 1: Honora spec**
+- [x] **Step 1: Honora spec**
 
 ```ts
 // src/components/diagrams/honora.ts
@@ -519,7 +521,7 @@ export const honora: DiagramSpec = {
 
 Add `honora` to `DIAGRAMS` in `index.ts`.
 
-- [ ] **Step 2: Proof element**
+- [x] **Step 2: Proof element**
 
 Set large, in gold, above the fold. It is the one place gold appears at size on the site.
 
@@ -612,7 +614,7 @@ In `CaseStudy.tsx`, replace the `p.onchain` paragraph in the header with nothing
 
 Remove the `.onchain` rules from `CaseStudy.module.css`.
 
-- [ ] **Step 3: Verify and commit**
+- [x] **Step 3: Verify and commit**
 
 Run: `pnpm test && pnpm typecheck && pnpm lint`. Chrome `/work/honora` at 1440px and 500px: the gold proof block sits under the header, the address wraps in two halves on narrow screens without overflow, the diagram's contract box is gold and inside the "Source of truth" region.
 

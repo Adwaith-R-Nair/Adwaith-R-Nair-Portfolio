@@ -1,45 +1,71 @@
 import { edges as contentEdges, projects } from "@/content";
-import { createRenderer, type HeroRenderer, type Offsets } from "./renderer";
+import { browserStore, clearPending, markLost, markPending, resetGuard, shouldSkip } from "./guard";
+import { CONTEXT_ATTRIBUTES, createRenderer, type GlHandle, type HeroRenderer, type Offsets } from "./renderer";
 import {
   alphaCandidates, sampleConstellation, sampleLine, sampleMask, samplePortrait, type Vec2,
 } from "./sampling";
 import { weightsFor, type Layout, type Rect } from "./scroll";
 import { rasteriseText } from "./text";
-import { FrameStepper, NONE, SOFTWARE_GL, TIERS, guessTier, type DeviceHints } from "./tiers";
+import { DISCRETE_GL, FrameStepper, NONE, SOFTWARE_GL, TIERS, guessTier, startTier, type DeviceHints } from "./tiers";
 
 const NAME = "ADWAITH";
 const IMAGE_URL = "/hero-crop.webp";
 const WORKER_TIMEOUT_MS = 4000;
 const FADE_MS = 600;
+/** Draw at most 60 times a second; the motion is slow, and a 144 Hz screen gains nothing visible. */
+const ACTIVE_FPS = 60;
+/** With no scroll or pointer movement for IDLE_MS, the slow drift is drawn at 30. */
+const IDLE_FPS = 30;
+const IDLE_MS = 2000;
 
-export function hintsFromBrowser(): DeviceHints {
+type Window_ = Window & { __heroForce?: boolean; __hero?: unknown };
+
+/** Device facts that need no WebGL context, so weak devices bail before one is ever created. */
+function baseHints(): DeviceHints {
   const nav = navigator as Navigator & { deviceMemory?: number; connection?: { saveData?: boolean } };
-  let webgl = false;
-  let softwareGl = false;
-  try {
-    const c = document.createElement("canvas");
-    const gl = c.getContext("webgl2") ?? c.getContext("webgl");
-    webgl = !!gl;
-    if (gl) {
-      const ext = gl.getExtension("WEBGL_debug_renderer_info");
-      const renderer = String(ext ? gl.getParameter(ext.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER));
-      softwareGl = SOFTWARE_GL.test(renderer);
-      gl.getExtension("WEBGL_lose_context")?.loseContext();
-    }
-  } catch {
-    webgl = false;
-  }
-  // Test hook: headless browsers only have software GL. Never set by the page itself.
-  if ((window as Window & { __heroForce?: boolean }).__heroForce === true) softwareGl = false;
   return {
     memory: nav.deviceMemory,
     cores: nav.hardwareConcurrency,
     finePointer: matchMedia("(pointer: fine)").matches,
     minSide: Math.min(innerWidth, innerHeight),
     saveData: nav.connection?.saveData === true,
-    webgl,
-    softwareGl,
+    webgl: true,
+    softwareGl: false,
+    discreteGpu: false,
   };
+}
+
+interface Probe extends GlHandle {
+  name: string;
+}
+
+/**
+ * Creates the layer's one and only WebGL context and reads the GPU's name from it. The same
+ * context is later handed to three.js; there is no throwaway probe context.
+ * `failIfMajorPerformanceCaveat` makes the browser refuse when it would fall back to software.
+ */
+function createContext(forced: boolean): Probe | null {
+  try {
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("webgl2", {
+      ...CONTEXT_ATTRIBUTES,
+      failIfMajorPerformanceCaveat: !forced,
+    }) as WebGL2RenderingContext | null;
+    if (!context) return null;
+    const ext = context.getExtension("WEBGL_debug_renderer_info");
+    const name = String(ext ? context.getParameter(ext.UNMASKED_RENDERER_WEBGL) : context.getParameter(context.RENDERER));
+    return { canvas, context, name };
+  } catch {
+    return null;
+  }
+}
+
+function release(gl: GlHandle): void {
+  try {
+    gl.context.getExtension("WEBGL_lose_context")?.loseContext();
+  } catch {
+    /* already gone */
+  }
 }
 
 interface PortraitData {
@@ -167,25 +193,65 @@ function buildConstellation(cache: LayoutCache, count: number, upp: number): Flo
 }
 
 export async function mount(): Promise<() => void> {
-  const tierIdx = guessTier(hintsFromBrowser());
-  if (tierIdx === NONE) return () => {};
+  const noop = () => {};
+  const store = browserStore();
+  if (new URLSearchParams(location.search).get("hero") === "reset") resetGuard(store);
+  if (shouldSkip(store, Date.now())) return noop;
+
+  const forced = (window as Window_).__heroForce === true;
   const dom = findDom();
-  if (!dom) return () => {};
+  if (!dom) return noop;
+  if (guessTier(baseHints()) === NONE) return noop;
+
+  // From here, whenever the tab is visible, a browser crash leaves this set. Hidden tabs draw
+  // nothing and cannot fault the GPU, so hiding or closing the tab clears it.
+  markPending(store, Date.now());
+  const onPageHide = (): void => clearPending(store);
+  const onPendingVisibility = (): void => {
+    if (document.hidden) clearPending(store);
+    else markPending(store, Date.now());
+  };
+  addEventListener("pagehide", onPageHide);
+  document.addEventListener("visibilitychange", onPendingVisibility);
+  const unwatchPending = (): void => {
+    removeEventListener("pagehide", onPageHide);
+    document.removeEventListener("visibilitychange", onPendingVisibility);
+  };
+
+  const probe = createContext(forced);
+  const hints: DeviceHints = {
+    ...baseHints(),
+    webgl: !!probe,
+    softwareGl: !forced && !!probe && SOFTWARE_GL.test(probe.name),
+    discreteGpu: !!probe && DISCRETE_GL.test(probe.name),
+  };
+  const ceiling = guessTier(hints);
+  const tierIdx = startTier(ceiling, hints);
+  if (!probe || ceiling === NONE) {
+    if (probe) release(probe);
+    unwatchPending();
+    clearPending(store);
+    return noop;
+  }
 
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const count = TIERS[tierIdx]!.count;
+  // Allocate for the ceiling so a proven-fast device can step up without new geometry.
+  const count = TIERS[ceiling]!.count;
   let disposed = false;
   let renderer: HeroRenderer | null = null;
   let raf = 0;
-  const cleanups: (() => void)[] = [];
+  const cleanups: (() => void)[] = [unwatchPending];
 
-  function dispose(): void {
+  function dispose(reason: "lost" | "normal" = "normal"): void {
     if (disposed) return;
     disposed = true;
     cancelAnimationFrame(raf);
     for (const c of cleanups) c();
-    renderer?.dispose();
+    if (renderer) renderer.dispose();
+    else release(probe!);
     renderer = null;
+    if (reason === "lost") markLost(store, Date.now());
+    else clearPending(store);
     delete document.documentElement.dataset.particles;
     delete document.documentElement.dataset.heroTier;
     dom!.stage.style.opacity = "0";
@@ -208,6 +274,7 @@ export async function mount(): Promise<() => void> {
 
     renderer = createRenderer(
       dom.stage,
+      probe,
       { p0: portrait.pos, col: portrait.col, p1, p2: new Float32Array(count * 3), p3 },
       count,
       tierIdx,
@@ -218,16 +285,23 @@ export async function mount(): Promise<() => void> {
     let cache = readLayout(dom);
     renderer.replaceTarget(2, buildConstellation(cache, count, renderer.unitsPerPixel()));
 
-    const stepper = new FrameStepper(tierIdx);
-    let last = 0;
+    const stepper = new FrameStepper(tierIdx, { ceiling });
+    let lastTick = 0;
+    let lastRender = 0;
+    let acc = 0;
+    let lastActivity = performance.now();
+    let lastScrollY = scrollY;
     let fade = 0;
     let curAlpha = 1;
     let lastWeights = weightsFor(scrollY, cache.layout);
     let lastOffsets: Offsets | null = null;
     // Read-only debug hook for device testing. Never written to by the page.
-    (window as Window & { __hero?: unknown }).__hero = {
+    (window as Window_).__hero = {
       get state() {
-        return { tier: stepper.tier, settled: stepper.settled, weights: lastWeights, offsets: lastOffsets, cache, fade, curAlpha };
+        return {
+          gpu: probe.name, ceiling, tier: stepper.tier, settled: stepper.settled,
+          weights: lastWeights, offsets: lastOffsets, cache, fade, curAlpha,
+        };
       },
     };
 
@@ -258,14 +332,48 @@ export async function mount(): Promise<() => void> {
       if (disposed || !renderer) return;
       if (document.hidden) {
         raf = 0;
-        last = 0;
+        lastTick = 0;
+        lastRender = 0;
         return;
       }
-      const raw = last ? t - last : 16;
-      last = t;
-      // A frame over 80ms is a stall (throttled tab, GC pause), not GPU cost: do not let it step the tier.
-      const stalled = raw > 80;
-      const dt = Math.min(80, raw);
+      const tick = lastTick ? t - lastTick : 1000 / ACTIVE_FPS;
+      lastTick = t;
+      // Never draw into a minimised or zero-size window.
+      if (innerWidth < 2 || innerHeight < 2) {
+        raf = requestAnimationFrame(loop);
+        return;
+      }
+      if (scrollY !== lastScrollY) {
+        lastScrollY = scrollY;
+        lastActivity = t;
+      }
+
+      // The stepper sees every browser frame while the layer is on screen, slow ones included:
+      // a slow tick is exactly the signal it exists to catch.
+      if (fade < 1 || fade * curAlpha > 0.005) {
+        const step = stepper.push(tick);
+        if (step === NONE) {
+          dispose();
+          return;
+        }
+        if (step !== null) {
+          renderer.setTier(step);
+          document.documentElement.dataset.heroTier = TIERS[step]?.name ?? "";
+        }
+      }
+
+      // Pace drawing to 60 fps, or 30 when idle, carrying the remainder so the average holds.
+      const idle = fade >= 1 && t - lastActivity > IDLE_MS;
+      const interval = 1000 / (idle ? IDLE_FPS : ACTIVE_FPS);
+      acc += tick;
+      if (acc < interval - 0.5) {
+        raf = requestAnimationFrame(loop);
+        return;
+      }
+      acc = Math.min(acc - interval, interval);
+      const dt = Math.min(80, lastRender ? t - lastRender : interval);
+      lastRender = t;
+
       const w = weightsFor(scrollY, cache.layout);
       const o = offsets();
       lastWeights = w;
@@ -276,33 +384,22 @@ export async function mount(): Promise<() => void> {
       curAlpha += (w.alpha - curAlpha) * (reduced ? 1 : 1 - Math.exp(-dt / 140));
       const a = fade * curAlpha;
       dom!.stage.style.opacity = a.toFixed(3);
-      if (a > 0.005) {
-        if (!stalled) {
-          const step = stepper.push(dt);
-          if (step === NONE) {
-            // Even the minimal tier cannot hold the frame budget. Restore the static hero.
-            dispose();
-            return;
-          }
-          if (step !== null) {
-            renderer.setTier(step);
-            document.documentElement.dataset.heroTier = TIERS[step]?.name ?? "";
-          }
-        }
-        renderer.frame(t, dt);
-      }
+      if (a > 0.005) renderer.frame(t, dt);
       raf = requestAnimationFrame(loop);
     }
 
     const start = (): void => {
       if (!raf && !disposed) {
-        last = 0;
+        lastTick = 0;
+        lastRender = 0;
+        acc = 0;
         raf = requestAnimationFrame(loop);
       }
     };
 
     let resizeTimer = 0;
     const onResize = (): void => {
+      lastActivity = performance.now();
       clearTimeout(resizeTimer);
       resizeTimer = window.setTimeout(() => {
         if (disposed || !renderer) return;
@@ -312,6 +409,7 @@ export async function mount(): Promise<() => void> {
       }, 150);
     };
     const onMove = (e: PointerEvent): void => {
+      lastActivity = performance.now();
       renderer?.setPointer(e.clientX, e.clientY);
     };
     const onLeave = (): void => {
@@ -322,7 +420,7 @@ export async function mount(): Promise<() => void> {
     };
     const onLost = (e: Event): void => {
       e.preventDefault();
-      dispose();
+      dispose("lost");
     };
 
     addEventListener("resize", onResize);

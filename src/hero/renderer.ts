@@ -42,13 +42,33 @@ export interface HeroRenderer {
   dispose(): void;
 }
 
-/** Imperative three.js. No React, no layout reads. The caller owns the loop. */
+/** The one WebGL context the layer uses, created by the caller so it can inspect the GPU first. */
+export interface GlHandle {
+  canvas: HTMLCanvasElement;
+  context: WebGL2RenderingContext;
+}
+
+/** Context attributes for that single context. Default power preference: never ask for the discrete GPU. */
+export const CONTEXT_ATTRIBUTES: WebGLContextAttributes = {
+  alpha: true,
+  antialias: false,
+  depth: true,
+  stencil: false,
+  premultipliedAlpha: true,
+  preserveDrawingBuffer: false,
+  powerPreference: "default",
+};
+
+/**
+ * Imperative three.js. No React, no layout reads. The caller owns the loop.
+ * `count` is the allocated point count (the ceiling tier); `tierIdx` is the tier drawn first.
+ */
 export function createRenderer(
-  container: HTMLElement, t: Targets, count: number, tierIdx: number, reduced: boolean,
+  container: HTMLElement, gl: GlHandle, t: Targets, count: number, tierIdx: number, reduced: boolean,
 ): HeroRenderer {
   const tier = TIERS[tierIdx] ?? TIERS[TIERS.length - 1]!;
 
-  const renderer = new WebGLRenderer({ antialias: false, alpha: true, powerPreference: "high-performance" });
+  const renderer = new WebGLRenderer({ canvas: gl.canvas, context: gl.context, antialias: false, alpha: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, tier.dpr));
   renderer.setClearColor(0x000000, 0);
   renderer.outputColorSpace = SRGBColorSpace;
@@ -111,6 +131,8 @@ export function createRenderer(
   }
 
   function resize(width: number, height: number): void {
+    // A minimised or zero-height window must never reach the projection maths.
+    if (!(width >= 1 && height >= 1)) return;
     W = width;
     H = height;
     camera.aspect = W / H;

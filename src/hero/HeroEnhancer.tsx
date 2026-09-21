@@ -18,7 +18,11 @@ export function HeroEnhancer() {
     const handle = ric(() => {
       import("./mount")
         .then(async (m) => {
-          if (!cancelled) dispose = await m.mount();
+          if (cancelled) return;
+          const d = await m.mount();
+          // Unmounted while the layer was loading: tear it down at once instead of leaking it.
+          if (cancelled) d();
+          else dispose = d;
         })
         .catch(() => undefined);
     });

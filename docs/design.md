@@ -174,7 +174,9 @@ The hero is the only client-side enhancement. It is a real image first and a par
 
 ### Tiers
 
-| Tier | Points | Max DPR | Initial guess |
+The table gives each device's **ceiling**. Geometry is allocated for the ceiling. Discrete GPUs, recognised by renderer name, start at their ceiling; every other GPU starts no higher than "balanced" and must earn "high" by measurement (decisions/0004).
+
+| Tier | Points | Max DPR | Ceiling when |
 |---|---|---|---|
 | high | 170,000 | 2.00 | fine pointer, min viewport side >= 700, >= 8 cores, >= 8 GB |
 | balanced | 95,000 | 1.60 | fine pointer and >= 4 cores, or >= 6 cores and >= 4 GB |
@@ -182,7 +184,11 @@ The hero is the only client-side enhancement. It is a real image first and a par
 | minimal | 20,000 | 1.00 | everything else |
 | none | 0 | n/a | <= 2 cores, or <= 2 GB, or `saveData`, or no WebGL context, or WebGL rasterised in software (SwiftShader, llvmpipe: every frame is a main-thread long task) |
 
-Point size is `700 / sqrt(activeCount)`. Stepping down changes only `setDrawRange` and `setPixelRatio`. Stepping up never happens. If the minimal tier still cannot hold twice the frame budget, the layer disposes itself and the static hero returns.
+Point size is `700 / sqrt(activeCount)`, clamped to 32 px in the shader. Changing tier changes only `setDrawRange` and `setPixelRatio`.
+
+The stepper is fed every browser frame tick while the layer is on screen, slow ones included. After a 40-tick warm-up it takes the median of each 50-tick window: over 21 ms steps down one tier; at the floor, over 42 ms switches the layer off. Ten consecutive ticks over 200 ms switch it off at once, even during warm-up. A device below its ceiling that has never stepped down steps up one tier after 6 s of measurement and two consecutive windows at or under 9 ms.
+
+Drawing is paced to 60 fps, and 30 fps after 2 s without scroll or pointer movement, whatever the display's refresh rate.
 
 ### States
 
@@ -192,7 +198,9 @@ Interaction rules are the spec's: light and up to 4 degrees of parallax on the p
 
 ### Failure handling
 
-- `webglcontextlost`: cancel the loop, remove the canvas, the image is already there.
+- `webglcontextlost`: cancel the loop, remove the canvas, the image is already there. The layer stays off in that browser for 7 days.
+- Crash memory: a `localStorage` sentinel (`hero:v1`) is set while the layer is in a visible tab and cleared when the tab is hidden, closed normally, or the layer stops. A visit that finds it still set keeps the layer off for 7 days, because the previous visit died while drawing. `?hero=reset` clears it. See `src/hero/guard.ts` and decisions/0004.
+- One WebGL2 context per page, created with the default power preference and `failIfMajorPerformanceCaveat`; weak devices are rejected before it is created.
 - Worker error or timeout over 4 seconds: give up silently, static hero stays.
 - `document.hidden`: loop stops, resumes on visibility.
 - Resize: renderer resizes, geometry untouched.

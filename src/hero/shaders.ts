@@ -60,7 +60,10 @@ void main() {
   vCol = mix(c, uGold, uW2 * 0.35) * (1.0 + glow * 0.75);
 
   vec4 mv = modelViewMatrix * vec4(p, 1.0);
-  gl_PointSize = aSize * uSize * uDpr * (8.2 / -mv.z) * (1.0 + glow * 0.35) * thin;
+  // Normal points are 2 to 11 px. Clamp, and drop anything non-finite, so no uniform can ever
+  // ask the rasteriser for a huge or undefined point.
+  float ps = aSize * uSize * uDpr * (8.2 / -mv.z) * (1.0 + glow * 0.35) * thin;
+  gl_PointSize = ps > 0.0 ? min(ps, 32.0) : 0.0;
   gl_Position = projectionMatrix * mv;
 }
 `;

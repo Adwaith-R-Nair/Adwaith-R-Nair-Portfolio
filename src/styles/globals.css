@@ -97,6 +97,9 @@ ol {
   left: var(--s-2);
   top: -100px;
   z-index: 100;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   padding: var(--s-1) var(--s-2);
   background: var(--ink);
   color: var(--ground);

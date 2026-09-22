@@ -47,6 +47,8 @@
 @media (max-width: 720px) {
   :root {
     --text-body: 14px;
+    /* 10.5px tracked uppercase is hard to read at arm's length on a phone. */
+    --text-label: 11.5px;
     --label-col: 0px;
   }
 }

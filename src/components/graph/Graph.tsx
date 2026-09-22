@@ -49,6 +49,14 @@ function GraphSvg({ layout, detail, className }: SvgProps) {
               data-graph-node={p.slug}
               aria-label={`${p.name}, ${p.tagline}`}
             >
+              {/* Invisible thumb-sized target covering the dot and its label. */}
+              <rect
+                className={styles.hit}
+                x={n.anchor === "end" ? n.x - 170 : n.anchor === "start" ? n.x - 24 : n.x - 85}
+                y={Math.min(n.y, n.y + n.dy) - 26}
+                width={n.anchor === "middle" ? 170 : 194}
+                height={Math.abs(n.dy) + (detail ? 76 : 58)}
+              />
               <circle cx={n.x} cy={n.y} r={p.flagship ? 7 : 5} />
               <text x={n.x + n.dx} y={n.y + n.dy} textAnchor={n.anchor} className={styles.name}>
                 {p.name}

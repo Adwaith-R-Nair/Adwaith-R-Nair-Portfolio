@@ -45,6 +45,9 @@
 
 .name a {
   text-decoration: none;
+  display: inline-block;
+  padding-block: 10px;
+  margin-block: -10px;
 }
 
 .name a:hover {

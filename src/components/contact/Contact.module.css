@@ -27,6 +27,9 @@
 }
 
 .email {
+  display: inline-block;
+  padding-block: 6px;
+  margin-block: -6px;
   font-family: var(--font-display);
   font-size: var(--display-3);
   color: var(--ink);
@@ -47,6 +50,14 @@
 .links a {
   color: var(--muted);
   text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  /* "X" is one glyph: give it a square target without widening the wider labels. */
+  min-width: 44px;
+  padding-inline: 4px;
+  margin-inline: -4px;
 }
 
 .links a:hover {

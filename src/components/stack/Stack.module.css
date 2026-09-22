@@ -20,7 +20,6 @@
 }
 
 .project:focus-visible {
-  outline: none;
   color: var(--accent);
 }
 
@@ -64,7 +63,6 @@
 .tech:focus-visible {
   color: var(--ink);
   border-bottom-color: var(--accent);
-  outline: none;
 }
 
 @media (max-width: 900px) {

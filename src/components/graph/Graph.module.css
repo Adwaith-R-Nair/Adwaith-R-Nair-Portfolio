@@ -72,6 +72,14 @@
 /* Transparent, not `none`, so it still takes the tap. */
 .hit {
   fill: rgba(0, 0, 0, 0);
+  stroke: none;
+}
+
+/* Keyboard focus draws a ring around the real target area, not just a colour change. */
+.node:focus-visible .hit {
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-dasharray: 4 3;
 }
 
 .node circle {

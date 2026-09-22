@@ -380,7 +380,7 @@ export async function mount(): Promise<() => void> {
       lastOffsets = o;
       renderer.setWeights(w);
       renderer.setOffsets(o);
-      fade = Math.min(1, fade + dt / FADE_MS);
+      fade = reduced ? 1 : Math.min(1, fade + dt / FADE_MS);
       curAlpha += (w.alpha - curAlpha) * (reduced ? 1 : 1 - Math.exp(-dt / 140));
       const a = fade * curAlpha;
       dom!.stage.style.opacity = a.toFixed(3);

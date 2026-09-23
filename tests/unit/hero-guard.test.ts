@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   DISABLE_MS, KEY, clearPending, markLost, markPending, resetGuard, shouldSkip, type GuardStore,
 } from "@/hero/guard";
+import { debugRequested, heroFlags } from "@/hero/debug";
 
 function memoryStore(): GuardStore & { data: Map<string, string> } {
   const data = new Map<string, string>();
@@ -68,5 +69,21 @@ describe("hero crash guard", () => {
     };
     expect(shouldSkip(throwing, T)).toBe(false);
     expect(() => markPending(throwing, T)).not.toThrow();
+  });
+});
+
+describe("hero url flags", () => {
+  it("reads one flag or several", () => {
+    expect([...heroFlags("?hero=debug")]).toEqual(["debug"]);
+    expect([...heroFlags("?hero=reset,debug")]).toEqual(["reset", "debug"]);
+    expect([...heroFlags("?hero=")]).toEqual([]);
+    expect([...heroFlags("")]).toEqual([]);
+  });
+
+  it("asks for the readout only when told to", () => {
+    expect(debugRequested("?hero=debug")).toBe(true);
+    expect(debugRequested("?hero=reset,debug")).toBe(true);
+    expect(debugRequested("?hero=reset")).toBe(false);
+    expect(debugRequested("")).toBe(false);
   });
 });

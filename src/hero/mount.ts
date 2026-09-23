@@ -1,5 +1,5 @@
 import { edges as contentEdges, projects } from "@/content";
-import { createDebug, type Debug } from "./debug";
+import { createDebug, heroFlags, type Debug } from "./debug";
 import { browserStore, clearPending, markLost, markPending, resetGuard, shouldSkip } from "./guard";
 import { CONTEXT_ATTRIBUTES, createRenderer, type GlHandle, type HeroRenderer, type Offsets } from "./renderer";
 import {
@@ -48,10 +48,10 @@ interface Probe extends GlHandle {
 function createContext(forced: boolean): Probe | null {
   try {
     const canvas = document.createElement("canvas");
-    const context = canvas.getContext("webgl2", {
-      ...CONTEXT_ATTRIBUTES,
-      failIfMajorPerformanceCaveat: !forced,
-    }) as WebGL2RenderingContext | null;
+    // Ask strictly first: a browser that would fall back to software says no here. Some capable
+    // GPUs, phones especially, also say no, so a refusal is retried and judged by name instead.
+    const context = (canvas.getContext("webgl2", { ...CONTEXT_ATTRIBUTES, failIfMajorPerformanceCaveat: !forced }) ??
+      canvas.getContext("webgl2", CONTEXT_ATTRIBUTES)) as WebGL2RenderingContext | null;
     if (!context) return null;
     const ext = context.getExtension("WEBGL_debug_renderer_info");
     const name = String(ext ? context.getParameter(ext.UNMASKED_RENDERER_WEBGL) : context.getParameter(context.RENDERER));
@@ -196,13 +196,29 @@ function buildConstellation(cache: LayoutCache, count: number, upp: number): Flo
 export async function mount(): Promise<() => void> {
   const noop = () => {};
   const store = browserStore();
-  if (new URLSearchParams(location.search).get("hero") === "reset") resetGuard(store);
-  if (shouldSkip(store, Date.now())) return noop;
+  if (heroFlags(location.search).has("reset")) resetGuard(store);
+  // Created before every gate, so `?hero=debug` can say which one refused.
+  let debug: Debug | null = createDebug();
+  const bail = (reason: string): (() => void) => {
+    debug?.off(reason);
+    return noop;
+  };
+
+  if (shouldSkip(store, Date.now())) {
+    return bail("a previous visit ended while drawing, so it is paused for 7 days. add ?hero=reset to clear");
+  }
 
   const forced = (window as Window_).__heroForce === true;
   const dom = findDom();
-  if (!dom) return noop;
-  if (guessTier(baseHints()) === NONE) return noop;
+  if (!dom) return bail("no hero elements on this page");
+  const pre = baseHints();
+  if (guessTier(pre) === NONE) {
+    return bail(
+      pre.saveData
+        ? "data saver is on"
+        : `device reports ${pre.memory ?? "?"} GB and ${pre.cores ?? "?"} cores, under the minimum`,
+    );
+  }
 
   // From here, whenever the tab is visible, a browser crash leaves this set. Hidden tabs draw
   // nothing and cannot fault the GPU, so hiding or closing the tab clears it.
@@ -229,10 +245,15 @@ export async function mount(): Promise<() => void> {
   const ceiling = guessTier(hints);
   const tierIdx = startTier(ceiling, hints);
   if (!probe || ceiling === NONE) {
+    const why = !probe
+      ? "this browser gave no webgl2 context"
+      : hints.softwareGl
+        ? `software rendering: ${probe.name.slice(0, 60)}`
+        : "device below the minimum";
     if (probe) release(probe);
     unwatchPending();
     clearPending(store);
-    return noop;
+    return bail(why);
   }
 
   const gpuName = probe.name;
@@ -241,7 +262,6 @@ export async function mount(): Promise<() => void> {
   const count = TIERS[ceiling]!.count;
   let disposed = false;
   let renderer: HeroRenderer | null = null;
-  let debug: Debug | null = null;
   let raf = 0;
   const cleanups: (() => void)[] = [unwatchPending];
 
@@ -290,7 +310,6 @@ export async function mount(): Promise<() => void> {
     let cache = readLayout(dom);
     renderer.replaceTarget(2, buildConstellation(cache, count, renderer.unitsPerPixel()));
 
-    debug = createDebug();
     const stepper = new FrameStepper(tierIdx, { ceiling });
     let lastTick = 0;
     let lastRender = 0;
@@ -477,7 +496,8 @@ export async function mount(): Promise<() => void> {
     document.documentElement.dataset.heroTier = TIERS[tierIdx]?.name ?? "";
     start();
     return dispose;
-  } catch {
+  } catch (err) {
+    debug?.off(`start failed: ${String(err).slice(0, 80)}`);
     dispose();
     return dispose;
   }

@@ -19,11 +19,19 @@ export interface DebugInfo {
 
 export interface Debug {
   update(info: DebugInfo): void;
+  /** Why the layer is not running. Shown instead of the readout. */
+  off(reason: string): void;
   destroy(): void;
 }
 
+/** `?hero=debug`, and combinations like `?hero=reset,debug`. */
+export function heroFlags(search: string): Set<string> {
+  const raw = new URLSearchParams(search).get("hero") ?? "";
+  return new Set(raw.split(",").map((f) => f.trim()).filter(Boolean));
+}
+
 export function debugRequested(search: string): boolean {
-  return new URLSearchParams(search).get("hero") === "debug";
+  return heroFlags(search).has("debug");
 }
 
 const STYLE = [
@@ -57,6 +65,9 @@ export function createDebug(search: string = location.search): Debug | null {
 
   let last = 0;
   return {
+    off(reason) {
+      el.textContent = `hero: off\n${reason}`;
+    },
     update(info) {
       // Four updates a second is enough to read, and keeps the readout off the hot path.
       const now = performance.now();

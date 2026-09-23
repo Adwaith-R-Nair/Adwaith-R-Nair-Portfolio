@@ -138,3 +138,31 @@ test("the debug readout appears only with ?hero=debug", async ({ page }) => {
   expect(text).toMatch(/tier (high|balanced|light|minimal)\s+\d+k points/);
   expect(text).toMatch(/\d+ fps drawn of \d+ offered/);
 });
+
+test("the readout says why the layer is off", async ({ page }) => {
+  await page.addInitScript(forceCapable);
+  await page.addInitScript(() => {
+    localStorage.setItem("hero:v1", JSON.stringify({ pending: Date.now() - 60_000 }));
+  });
+  await page.goto("/?hero=debug");
+  await page.waitForTimeout(2000);
+  const text = await page.evaluate(
+    () => [...document.body.children].map((e) => e.textContent ?? "").find((t) => t.startsWith("hero: off")) ?? "",
+  );
+  expect(text).toContain("previous visit ended while drawing");
+  expect(await page.locator("#hero-stage canvas").count()).toBe(0);
+});
+
+test("reset and debug can be combined", async ({ page }) => {
+  await page.addInitScript(forceCapable);
+  await page.addInitScript(() => {
+    localStorage.setItem("hero:v1", JSON.stringify({ disabledUntil: Date.now() + 86_400_000 }));
+  });
+  await page.goto("/?hero=reset,debug");
+  await expect(page.locator("html")).toHaveAttribute("data-particles", "on", { timeout: 20_000 });
+  await page.waitForTimeout(1200);
+  const text = await page.evaluate(
+    () => [...document.body.children].map((e) => e.textContent ?? "").find((t) => t.startsWith("tier ")) ?? "",
+  );
+  expect(text).toMatch(/tier \w+/);
+});

@@ -13,13 +13,13 @@ Simulated numbers are guesses. The build spec's budget is written for real hardw
 `?hero=debug` puts a small panel in the bottom-left corner:
 
 ```
-tier balanced  95k points
-57 fps drawn of 60 offered  dpr 2.6
-AMD Radeon 680M
+tier balanced  95k points  dpr 3
+57 fps drawn of 60 offered  cap 60
+Qualcomm, Adreno (TM) 618, OpenGL ES 3.2
 ```
 
 - **tier** and **points**: the quality level the layer settled on. It may start at `balanced` and move to `high` after about six seconds if the phone has headroom.
-- **fps drawn** against **offered**: drawn is how often the portrait was redrawn, capped at 60. Offered is the phone's own screen rate. Drawn well below the cap while offered stays high means the GPU is struggling.
+- **fps drawn** against **offered**: drawn is how often the portrait was redrawn. Offered is the phone's own screen rate. **cap** is what the layer is aiming for: 60 normally, 30 after a couple of seconds without scrolling, when the line also reads `idle`. Drawn well below the cap, with no `idle`, means the GPU is struggling. That is the number to report.
 - **dpr**: the screen's pixel density.
 
 ## The run

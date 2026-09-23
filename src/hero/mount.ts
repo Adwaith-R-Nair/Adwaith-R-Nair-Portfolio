@@ -404,7 +404,8 @@ export async function mount(): Promise<() => void> {
 
       // Pace drawing to 60 fps, or 30 when idle, carrying the remainder so the average holds.
       const idle = fade >= 1 && t - lastActivity > IDLE_MS;
-      const interval = 1000 / (idle ? IDLE_FPS : ACTIVE_FPS);
+      const cap = idle ? IDLE_FPS : ACTIVE_FPS;
+      const interval = 1000 / cap;
       acc += tick;
       if (acc < interval - 0.5) {
         raf = requestAnimationFrame(loop);
@@ -435,6 +436,8 @@ export async function mount(): Promise<() => void> {
         ticks: ticksPerSecond,
         gpu: gpuName,
         dpr: Math.round((window.devicePixelRatio || 1) * 100) / 100,
+        cap,
+        idle,
       });
       raf = requestAnimationFrame(loop);
     }

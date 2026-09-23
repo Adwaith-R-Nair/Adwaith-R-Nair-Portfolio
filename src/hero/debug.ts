@@ -15,6 +15,10 @@ export interface DebugInfo {
   ticks: number;
   gpu: string;
   dpr: number;
+  /** The frame rate the layer is aiming for right now. */
+  cap: number;
+  /** True while nothing has scrolled or moved for a couple of seconds. */
+  idle: boolean;
 }
 
 export interface Debug {
@@ -75,8 +79,8 @@ export function createDebug(search: string = location.search): Debug | null {
       last = now;
       const gpu = info.gpu.replace(/^ANGLE \(|\)$/g, "").slice(0, 46);
       el.textContent =
-        `tier ${info.tier}  ${(info.points / 1000).toFixed(0)}k points\n` +
-        `${info.fps} fps drawn of ${info.ticks} offered  dpr ${info.dpr}\n` +
+        `tier ${info.tier}  ${(info.points / 1000).toFixed(0)}k points  dpr ${info.dpr}\n` +
+        `${info.fps} fps drawn of ${info.ticks} offered  cap ${info.cap}${info.idle ? " idle" : ""}\n` +
         `${gpu}`;
     },
     destroy() {

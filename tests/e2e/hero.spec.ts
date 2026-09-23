@@ -118,3 +118,23 @@ test("integrated and unknown GPUs start below the top tier", async ({ page }) =>
   await expect(page.locator("html")).toHaveAttribute("data-particles", "on", { timeout: 20_000 });
   await expect(page.locator("html")).toHaveAttribute("data-hero-tier", "balanced");
 });
+
+test("the debug readout appears only with ?hero=debug", async ({ page }) => {
+  await page.addInitScript(forceCapable);
+  const readoutCount = () =>
+    page.evaluate(() => [...document.body.children].filter((e) => (e.textContent ?? "").startsWith("tier ")).length);
+
+  await page.goto("/");
+  await expect(page.locator("html")).toHaveAttribute("data-particles", "on", { timeout: 20_000 });
+  expect(await readoutCount(), "a normal visit shows nothing").toBe(0);
+
+  await page.goto("/?hero=debug");
+  await expect(page.locator("html")).toHaveAttribute("data-particles", "on", { timeout: 20_000 });
+  await page.waitForTimeout(1500);
+  expect(await readoutCount(), "the readout is present").toBe(1);
+  const text = await page.evaluate(
+    () => [...document.body.children].map((e) => e.textContent ?? "").find((t) => t.startsWith("tier ")) ?? "",
+  );
+  expect(text).toMatch(/tier (high|balanced|light|minimal)\s+\d+k points/);
+  expect(text).toMatch(/\d+ fps drawn of \d+ offered/);
+});

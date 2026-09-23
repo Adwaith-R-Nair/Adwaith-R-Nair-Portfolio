@@ -1,4 +1,5 @@
 import { edges as contentEdges, projects } from "@/content";
+import { createDebug, type Debug } from "./debug";
 import { browserStore, clearPending, markLost, markPending, resetGuard, shouldSkip } from "./guard";
 import { CONTEXT_ATTRIBUTES, createRenderer, type GlHandle, type HeroRenderer, type Offsets } from "./renderer";
 import {
@@ -234,11 +235,13 @@ export async function mount(): Promise<() => void> {
     return noop;
   }
 
+  const gpuName = probe.name;
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
   // Allocate for the ceiling so a proven-fast device can step up without new geometry.
   const count = TIERS[ceiling]!.count;
   let disposed = false;
   let renderer: HeroRenderer | null = null;
+  let debug: Debug | null = null;
   let raf = 0;
   const cleanups: (() => void)[] = [unwatchPending];
 
@@ -250,6 +253,8 @@ export async function mount(): Promise<() => void> {
     if (renderer) renderer.dispose();
     else release(probe!);
     renderer = null;
+    debug?.destroy();
+    debug = null;
     if (reason === "lost") markLost(store, Date.now());
     else clearPending(store);
     delete document.documentElement.dataset.particles;
@@ -285,6 +290,7 @@ export async function mount(): Promise<() => void> {
     let cache = readLayout(dom);
     renderer.replaceTarget(2, buildConstellation(cache, count, renderer.unitsPerPixel()));
 
+    debug = createDebug();
     const stepper = new FrameStepper(tierIdx, { ceiling });
     let lastTick = 0;
     let lastRender = 0;
@@ -293,13 +299,18 @@ export async function mount(): Promise<() => void> {
     let lastScrollY = scrollY;
     let fade = 0;
     let curAlpha = 1;
+    let drawn = 0;
+    let offered = 0;
+    let countedAt = 0;
+    let fps = 0;
+    let ticksPerSecond = 0;
     let lastWeights = weightsFor(scrollY, cache.layout);
     let lastOffsets: Offsets | null = null;
     // Read-only debug hook for device testing. Never written to by the page.
     (window as Window_).__hero = {
       get state() {
         return {
-          gpu: probe.name, ceiling, tier: stepper.tier, settled: stepper.settled,
+          gpu: gpuName, ceiling, tier: stepper.tier, settled: stepper.settled,
           weights: lastWeights, offsets: lastOffsets, cache, fade, curAlpha,
         };
       },
@@ -338,6 +349,16 @@ export async function mount(): Promise<() => void> {
       }
       const tick = lastTick ? t - lastTick : 1000 / ACTIVE_FPS;
       lastTick = t;
+      offered += 1;
+      if (!countedAt) countedAt = t;
+      else if (t - countedAt >= 1000) {
+        const secs = (t - countedAt) / 1000;
+        fps = Math.round(drawn / secs);
+        ticksPerSecond = Math.round(offered / secs);
+        drawn = 0;
+        offered = 0;
+        countedAt = t;
+      }
       // Never draw into a minimised or zero-size window.
       if (innerWidth < 2 || innerHeight < 2) {
         raf = requestAnimationFrame(loop);
@@ -384,7 +405,18 @@ export async function mount(): Promise<() => void> {
       curAlpha += (w.alpha - curAlpha) * (reduced ? 1 : 1 - Math.exp(-dt / 140));
       const a = fade * curAlpha;
       dom!.stage.style.opacity = a.toFixed(3);
-      if (a > 0.005) renderer.frame(t, dt);
+      if (a > 0.005) {
+        renderer.frame(t, dt);
+        drawn += 1;
+      }
+      debug?.update({
+        tier: TIERS[stepper.tier]?.name ?? "none",
+        points: TIERS[stepper.tier]?.count ?? 0,
+        fps,
+        ticks: ticksPerSecond,
+        gpu: gpuName,
+        dpr: Math.round((window.devicePixelRatio || 1) * 100) / 100,
+      });
       raf = requestAnimationFrame(loop);
     }
 

@@ -33,7 +33,7 @@
 | 3 | Full case-study pages: SVG architecture diagrams, Honora proof element, neighbour navigation | `docs/plans/phase-3-case-studies.md`. Done 2026-09-17: four data-driven diagrams, gold proof element, neighbour nav with taglines, print stylesheet; 57 unit tests, 45 e2e. |
 | 4 | Stack highlighting polish, How I build final copy, contact line state for the particles | No separate plan. Closed 2026-09-17: the contact line state shipped in Phase 2, stack highlighting in Phase 1 Task 10, and Adwaith confirmed the How I build copy and all three stack buckets as written. |
 | 5 | Social card, metadata, sitemap, analytics, domain, Vercel deploy | `docs/plans/phase-5-launch.md`. Done 2026-09-18: 11 generated images, ARN icon set, sitemap, robots, Person data, Vercel Analytics gated to Vercel builds; 57 unit tests, 64 e2e. Domain deferred, see docs/deploy.md. |
-| 6 | Mobile pass, reduced-motion pass, real-device testing against the budget | `docs/plans/phase-6-devices.md` |
+| 6 | Mobile pass, reduced-motion pass, real-device testing against the budget | `docs/plans/phase-6-devices.md`. Done 2026-09-23: touch targets from 78 undersized to 0, focus rings from 29 missing to 0, `?hero=debug` readout, every budget met on real hardware (design.md section 8); 75 unit tests, 98 e2e. |
 
 Later phase plans are written at the start of each phase so they can react to what the previous phase looks like in a browser. This file is the index.
 

@@ -216,6 +216,25 @@ Interaction rules are the spec's: light and up to 4 degrees of parallax on the p
 | 60 / 45 fps | Tier stepping on measured medians. |
 | Lighthouse 90+ mobile | Lighthouse CI in GitHub Actions on every push. |
 
+### Measured, 2026-09-23
+
+On the live site. The frame rates and the cold load come from Adwaith's own devices on mobile data, not from emulation; the Lighthouse figures are the mobile preset, median of three runs, on simulated 4G.
+
+| Budget (build-spec section 2) | Target | Measured | |
+|---|---|---|---|
+| LCP, mid-tier Android on mobile data | < 2.0 s | under 2 s, portrait readable | met |
+| Frame rate, desktop | 60 fps sustained | 60 drawn of 300 offered, tier `high`, 170k points, Radeon 680M | met |
+| Frame rate, mobile | 45 fps, or auto-downgrade | 60 while scrolling, 30 idle by design, tier `balanced`, 95k points, Adreno 618 | met |
+| Scrolling | no jank | no stutter through all four states, reported by hand | met |
+| Initial JS before WebGL | < 150 KB gz (decisions/0002) | 141.3 KB | met |
+| WebGL bundle | lazy, after first paint | about 142 KB gz, loaded on idle | met |
+| Hero image assets | < 120 KB | 85 KB | met |
+| Lighthouse performance, mobile | 90+ | 95 home, 99 case study | met |
+| Lighthouse accessibility | not set by the spec | 100 | |
+| Touch targets | not set by the spec | every standalone link at least 44 px | |
+
+Two notes. The laptop's 300 Hz panel is why the frame cap matters: before it, the layer drew 300 times a second on an integrated GPU, which is the load that preceded the GPU fault in decisions/0004. Lighthouse's simulated LCP for the home page reads 2.15 s, slightly over target, while the same page on a real mid-range phone on mobile data came in under 2 s; the simulation throttles harder than the network did.
+
 ## 9. Testing
 
 - **Unit (Vitest):** `sampling.ts` on a synthetic 8x8 image with a known gradient, asserting points cluster on edges and never land on transparent pixels. `tiers.ts` with fake frame sequences, asserting step-down timing and settle. `scroll.ts` with fake section rectangles. The content rule test from section 4.
